@@ -274,7 +274,7 @@ footer.pf p{margin:0 0 5px}
   <div class="explain-in">
     <div class="eyebrow">Vault22 · Invest module · Prototype, not built</div>
     <h1>Investments is one page</h1>
-    <p>Updated with Stephen's feedback of 1&#8211;2 Sep: wallets sit in the accounts row rather than their own section, tabs renamed to Portfolios / Equities / Transactions / Forecast, a portfolio now opens a detail view with chart and buy&#8202;/&#8202;sell, Tara insight cards added, and a mobile layout. Everything below is clickable.</p>
+    <p>Updated with Stephen's feedback of 1&#8211;2 Sep: the two trading accounts sit in the accounts row and are no longer called wallets, tabs renamed to Portfolios / Equities / Transactions / Forecast, a portfolio now opens a detail view with chart and buy&#8202;/&#8202;sell, Tara insight cards added, and a mobile layout. Everything below is clickable.</p>
     <div class="switch" id="switch"></div>
   </div>
 </div>
@@ -333,7 +333,7 @@ const PF={
 };
 
 const W={
-  zar:{key:'zar',short:'ZAR wallet',label:'Vault22 Rand wallet',flag:'🇿🇦',venue:'South Africa',market:'JSE',
+  zar:{key:'zar',short:'South Africa',ccy:'ZAR',flag:'🇿🇦',venue:'Vault22',market:'JSE',
     total:'R 45,250.00',cash:'R 5,250.00',invested:'R 40,000.00',pnl:'+R 1,842.50',pnlpc:'+4.79%',
     tickers:[
       {s:'NPN',n:'Naspers Ltd',p:'R 4,812.00',c:'+8.42%',r:'Growth'},
@@ -353,7 +353,7 @@ const W={
       {d:'19 Aug 2026',t:'Wallet funding · Ozow',a:'R 40,000.00',s:'Settled'},
       {d:'12 Aug 2026',t:'Buy · SOL',a:'R 5,934.00',s:'Filled'}],
     fc:[['JSE All Share','+6.2%','12-month consensus'],['SA repo rate','7.25%','Hold expected at next MPC'],['ZAR / USD','18.42','Range-bound near term']]},
-  usd:{key:'usd',short:'USD wallet',label:'US dollar wallet',flag:'🇺🇸',venue:'Alpaca',market:'US markets',
+  usd:{key:'usd',short:'United States',ccy:'USD',flag:'🇺🇸',venue:'Alpaca',market:'US markets',
     total:'$12,480.00',cash:'$10,000.00',invested:'$2,480.00',pnl:'+$480.00',pnlpc:'+4.03%',
     tickers:[
       {s:'TSLA',n:'Tesla, Inc. Common Stock',p:'$363.60',c:'+11.73%',r:'Balanced'},
@@ -377,11 +377,11 @@ const W={
 
 /* Tara insights — the 10 Marko's next version will carry, marked for invest relevance */
 const TARA=[
-  {k:'Idle cash',t:'R5,250 is earning nothing',d:'It has sat in your rand wallet for 21 days. Smart Saver is paying 8.42%.',a:'Move to Smart Saver',c:'act',in:1},
-  {k:'Concentration',t:'AAPL is 51% of your US equities',d:'One name moves half this wallet. Three holdings is thin cover.',a:'See diversification',c:'warn',in:1},
+  {k:'Idle cash',t:'R5,250 is earning nothing',d:'It has sat in your South African account for 21 days. Smart Saver is paying 8.42%.',a:'Move to Smart Saver',c:'act',in:1},
+  {k:'Concentration',t:'AAPL is 51% of your US equities',d:'One name moves half this account. Three holdings is thin cover.',a:'See diversification',c:'warn',in:1},
   {k:'Risk profile',t:'You hold one Aggressive stock',d:'SOL is rated Aggressive; your profile is Balanced. Not blocked, just flagged.',a:'Review SOL',c:'warn',in:1},
-  {k:'Buying power',t:'$10,000 unused for 14 days',d:'Sitting as cash in the USD wallet rather than invested.',a:'Browse tickers',c:'act',in:1},
-  {k:'Currency mix',t:'82% of your wealth is in rand',d:'Your USD wallet is the other 18%. Offshore allowance is not near its limit.',a:'',c:'',in:1},
+  {k:'Buying power',t:'$10,000 unused for 14 days',d:'Sitting as cash in the US account rather than invested.',a:'Browse tickers',c:'act',in:1},
+  {k:'Currency mix',t:'82% of your wealth is in rand',d:'Your US account is the other 18%. Offshore allowance is not near its limit.',a:'',c:'',in:1},
   {k:'Coming up',t:'US Fed decision on Thursday',d:'You hold three US equities that typically move on the announcement.',a:'',c:'',in:1},
   {k:'Contributions',t:'Three manual top-ups in a row',d:'A recurring plan averages your entry price instead of timing it.',a:'Set up recurring',c:'act',in:1},
   {k:'Costs',t:'$3.00 in commission this month',d:'Three trades at $1 flat. Larger, less frequent orders cost less per rand invested.',a:'',c:'',in:1},
@@ -480,7 +480,7 @@ function sidebar(){
 function acctCard(w){
   const on=S.wallet===w.key;
   return `<button class="wcard ${on?'on':''}" onclick="go({wallet:'${w.key}',pf:null,view:'invest'})">
-    <div class="whead"><span class="flag">${w.flag}</span><span class="wname">${e(w.short)} · ${e(w.venue)}</span><span class="sel">Selected</span></div>
+    <div class="whead"><span class="flag">${w.flag}</span><span class="wname">${e(w.short)} · ${e(w.ccy)}</span><span class="sel">Selected</span></div>
     <div class="wtot num">${e(w.total)}</div>
     <div class="wmeta">
       <div><div class="k">P&amp;L all time</div><div class="v num pnl">${e(w.pnl)} <span style="font-weight:500">${e(w.pnlpc)}</span></div></div>
@@ -512,7 +512,7 @@ const pillR=r=>`<span class="pill ${r==='Ultra Low'||r==='Conservative'?'g':'b'}
 
 function tPfs(w){return `<div class="card">
   <div class="sec-t">Portfolios <span class="pill o">${e(w.venue)}</span></div>
-  <p class="hint">Managed baskets you can buy in this wallet's currency. Open one for performance, costs and holdings.</p>
+  <p class="hint">Managed baskets you can buy in this account's currency. Open one for performance, costs and holdings.</p>
   <div class="grid3">${w.pfs.map(k=>{const p=PF[k];return `<div class="tick" onclick="go({view:'pfdetail',pf:'${k}'})">
     <div style="display:flex;gap:7px;margin-bottom:10px">${pillR(p.r)}<span class="pill o">${e(p.reg)}</span></div>
     <div class="tk" style="font-size:15px;margin-bottom:6px">${e(p.n)}</div>
@@ -523,7 +523,7 @@ function tPfs(w){return `<div class="card">
 
 function tEq(w){return `<div class="card">
   <div class="sec-t">Equities <span class="pill o">${w.holdings.length} holdings</span></div>
-  <p class="hint">What this wallet currently owns.</p>
+  <p class="hint">What this account currently owns.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Instrument</th><th class="r">Quantity</th><th class="r">Avg cost</th><th class="r">Value</th><th class="r">P&amp;L</th></tr></thead>
     <tbody>${w.holdings.map(h=>`<tr><td><b>${e(h.s)}</b></td><td class="r num">${e(h.q)}</td>
@@ -532,7 +532,7 @@ function tEq(w){return `<div class="card">
 
 function tTxns(w){return `<div class="card">
   <div class="sec-t">Transactions <span class="r">Export →</span></div>
-  <p class="hint">Orders and funding for this wallet.</p>
+  <p class="hint">Orders and funding for this account.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Date</th><th>Activity</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
     <tbody>${w.txns.map(t=>`<tr><td class="num">${e(t.d)}</td><td><b>${e(t.t)}</b></td>
@@ -540,7 +540,7 @@ function tTxns(w){return `<div class="card">
 
 function tFc(w){return `<div class="note am"><b>Parked pending data.</b> This follows the market-forecast prototype of 4 Aug. Before it can be built we need to confirm where each number comes from — index consensus, rate expectations and currency views are three different sources.</div>
   <div class="card"><div class="sec-t">Forecast <span class="pill o">${e(w.venue)}</span></div>
-  <p class="hint">Scoped to the market this wallet trades in, rather than one global view that half applies.</p>
+  <p class="hint">Scoped to the market this account trades in, rather than one global view that half applies.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Indicator</th><th class="r">Level</th><th>Outlook</th></tr></thead>
     <tbody>${w.fc.map(f=>`<tr><td><b>${e(f[0])}</b></td><td class="r num up">${e(f[1])}</td><td>${e(f[2])}</td></tr>`).join('')}</tbody></table></div></div>`;}
@@ -589,7 +589,7 @@ function viewPfDetail(){
         <div><div class="k">Holdings</div><div class="v">${e(p.holds)}</div></div>
         <div><div class="k">Risk rating</div><div class="v">${e(p.r)}</div></div>
         <div><div class="k">Manager</div><div class="v">${e(p.mgr)}</div></div>
-        <div><div class="k">Buy from</div><div class="v">${e(w.short)}</div></div>
+        <div><div class="k">Buy from</div><div class="v">${e(w.short)} · ${e(w.ccy)}</div></div>
       </div>
     </div>
 
@@ -612,8 +612,8 @@ function viewPfDetail(){
 /* ================= my wealth ================= */
 function viewWealth(){
   const rows=[
-    {n:'US dollar wallet',t:'Wallet · Alpaca · USD',v:'$12,480.00',d:'+$480.00',up:1,wal:'usd'},
-    {n:'Vault22 Rand wallet',t:'Wallet · Vault22 · ZAR',v:'R 45,250.00',d:'+R 1,842.50',up:1,wal:'zar'},
+    {n:'US dollar account',t:'Investment account · Alpaca · USD',v:'$12,480.00',d:'+$480.00',up:1,wal:'usd'},
+    {n:'Vault22 Rand account',t:'Investment account · Vault22 · ZAR',v:'R 45,250.00',d:'+R 1,842.50',up:1,wal:'zar'},
     {n:'Capitec Cheque',t:'Bank account · ZAR',v:'R 18,904.22',d:'—',up:1,wal:null},
     {n:'Discovery Credit Card',t:'Credit card · ZAR',v:'-R 6,410.88',d:'—',up:0,wal:null},
     {n:'Allan Gray Retirement Annuity',t:'Retirement · ZAR',v:'R 842,110.00',d:'+R 12,480.00',up:1,wal:null}
@@ -621,7 +621,7 @@ function viewWealth(){
   return `<main class="main">
     <div class="crumb"><b>My Wealth</b><span>›</span><b>Accounts</b></div>
     <h2 class="page">My Wealth</h2>
-    <div class="note"><b>No separate wallet section.</b> Both wallets sit in the accounts list at the top, alongside your bank, card and retirement accounts. This view answers "what am I worth" — trading stays under Investments.</div>
+    <div class="note"><b>No wallet section, and no wallet wording.</b> Both trading accounts sit in the accounts list alongside your bank, card and retirement accounts. This view answers "what am I worth" — trading stays under Investments.</div>
     <div class="card">
       <div class="sec-t">Accounts <span class="r">+ Link account</span></div>
       <p class="hint">Net worth <b style="color:var(--ink);font-family:Outfit,sans-serif">R 1,127,340.61</b> across ${rows.length} accounts.</p>
@@ -639,7 +639,7 @@ function viewWealth(){
 /* ================= what changed ================= */
 function viewChanged(){
   const fb=[
-    ['No separate wallet section — sit in accounts at the top','Done','My Wealth is one Accounts list with both wallets in it'],
+    ['No separate wallet section — sit in accounts at the top','Done','Both surfaces now treat them as accounts, and the word wallet is gone from the UI'],
     ['Model portfolios → Portfolios','Done','Tab renamed'],
     ['Stocks → Equities','Done','Tab renamed'],
     ['Transaction history → Transactions','Done','Tab renamed'],
@@ -675,6 +675,11 @@ function viewChanged(){
     </div>
 
     <div class="card">
+      <div class="sec-t">A naming decision for you</div>
+      <p class="hint" style="margin-bottom:0">I have taken the word <b>wallet</b> out of the interface entirely — the two cards are now <b>South&nbsp;Africa&nbsp;·&nbsp;ZAR</b> and <b>United&nbsp;States&nbsp;·&nbsp;USD</b>, and My Wealth lists them as investment accounts. Worth confirming, because <b>Vault22 Rand wallet</b> and <b>US dollar wallet</b> are the live product names today, so this is a rename rather than a layout tweak. If you want the wallet name kept as the account's label, that is a one-line change.</p>
+    </div>
+
+    <div class="card">
       <div class="sec-t">Navigation, before and after</div>
       <p class="hint">Six nav items collapse into two.</p>
       <div class="cmp" style="margin-top:6px">
@@ -694,7 +699,7 @@ function viewChanged(){
           <div class="fake">
             <div class="l mut">Home</div><div class="l mut">Transactions</div><div class="l mut">Budget</div>
             <div class="l hi">Investments <span class="pill gs" style="margin-left:auto">one page</span></div>
-            <div class="l">My Wealth</div><div class="l ind hi">Accounts <span class="pill gs" style="margin-left:auto">wallets here</span></div>
+            <div class="l">My Wealth</div><div class="l ind hi">Accounts <span class="pill gs" style="margin-left:auto">both accounts</span></div>
             <div class="l mut">Financial Fitness</div><div class="l mut">Goals</div>
           </div>
         </div>
@@ -719,7 +724,7 @@ function phone(cap,sub,inner,active){
 }
 function mAcct(w,on){
   return `<div class="mcard ${on?'on':''}">
-    <div class="mh"><span>${w.flag}</span> ${e(w.short)} · ${e(w.venue)}</div>
+    <div class="mh"><span>${w.flag}</span> ${e(w.short)} · ${e(w.ccy)}</div>
     <div class="mv num">${e(w.total)}</div>
     <div class="mm">
       <div><div class="k">P&amp;L</div><div class="v num">${e(w.pnl)}</div></div>

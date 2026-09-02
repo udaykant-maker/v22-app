@@ -262,6 +262,56 @@ svg.perf{display:block;width:100%;height:auto;overflow:visible}
 .mbtn.buy{background:var(--green);color:#fff}
 .mbtn.sell{background:#fff;border:1px solid var(--line-2);color:var(--red)}
 
+
+/* ===== My Wealth ===== */
+.pos{color:var(--green-dk)} .neg{color:var(--red)}
+.wbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.wbar .vtog{margin-left:auto;display:flex;gap:3px;background:var(--sunk);border:1px solid var(--line);border-radius:9px;padding:3px}
+.vt{width:32px;height:28px;border:0;background:none;border-radius:7px;cursor:pointer;color:var(--muted);display:grid;place-items:center;padding:0}
+.vt svg{width:17px;height:17px}
+.vt.on{background:var(--card);color:var(--green-dk);box-shadow:0 1px 2px rgba(18,40,69,.10)}
+.btn.sm{padding:7px 12px;font-size:12px}
+
+.nwrow{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px;margin-bottom:16px}
+@media (max-width:760px){.nwrow{grid-template-columns:1fr}}
+.nwhero,.nwt{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 19px;box-shadow:var(--shadow)}
+.nwhero{background:linear-gradient(135deg,#132B49,#0D1D33);border-color:transparent}
+.nwhero .k,.nwt .k{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;font-family:Outfit,sans-serif;color:var(--faint)}
+.nwhero .k{color:rgba(255,255,255,.6)}
+.nwhero .v{font-family:Outfit,sans-serif;font-size:33px;font-weight:600;letter-spacing:-.03em;color:#fff;margin-top:5px;line-height:1.1}
+.nwt .v{font-family:Outfit,sans-serif;font-size:25px;font-weight:600;letter-spacing:-.025em;margin-top:5px;line-height:1.15}
+.nwhero .s{font-size:12.5px;color:#7FE3B4;margin-top:7px;font-weight:500}
+.nwt .s{font-size:12px;color:var(--muted);margin-top:6px}
+
+.gsec{margin-bottom:20px}
+.gsech{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.gsech h3{font-family:Outfit,sans-serif;font-size:16px;font-weight:600;margin:0}
+.gdot{width:9px;height:9px;border-radius:3px;flex:none}
+.gdot.pos{background:var(--green-dk)} .gdot.neg{background:var(--red)}
+.gsum{font-family:Outfit,sans-serif;font-size:15px;font-weight:600}
+.gact{margin-left:auto;display:flex;gap:8px}
+
+.grp{background:var(--card);border:1px solid var(--line);border-radius:13px;margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+.ghead{display:flex;align-items:center;gap:13px;width:100%;padding:14px 18px;border:0;background:none;cursor:pointer;text-align:left;font-family:inherit}
+.ghead:hover{background:var(--sunk)}
+.gic{width:38px;height:38px;border-radius:999px;background:var(--sunk);display:grid;place-items:center;color:var(--ink-2);flex:none}
+.gic svg{width:19px;height:19px}
+.gn{flex:1;min-width:0;font-family:Outfit,sans-serif;font-size:15px;font-weight:600;color:var(--ink)}
+.gc{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:1px}
+.gt{font-family:Outfit,sans-serif;font-size:19px;font-weight:600;letter-spacing:-.02em}
+.gch{color:var(--faint);display:grid;place-items:center;flex:none;transition:transform .16s}
+.gch svg{width:18px;height:18px}
+.gch.sh{transform:rotate(180deg)}
+.glist{border-top:1px solid var(--line)}
+.grow{display:flex;align-items:center;gap:13px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.grow:last-child{border-bottom:0}
+.ric{width:32px;height:32px;border-radius:9px;background:var(--sunk);display:grid;place-items:center;color:var(--muted);flex:none}
+.ric svg{width:16px;height:16px}
+.rn{flex:1;min-width:0}
+.rn b{display:block;font-family:Outfit,sans-serif;font-size:13.5px;font-weight:600;color:var(--ink)}
+.rn span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.rv{font-family:Outfit,sans-serif;font-size:14.5px;font-weight:600;white-space:nowrap}
+
 footer.pf{max-width:1320px;margin:0 auto;padding:0 22px 44px;font-size:12.5px;color:var(--muted)}
 footer.pf p{margin:0 0 5px}
 :focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:6px}
@@ -288,7 +338,7 @@ footer.pf p{margin:0 0 5px}
 
 <script>
 /* ================= state ================= */
-const S={mode:'desktop',view:'invest',wallet:'usd',tab:'browse',pf:null,range:'1Y'};
+const S={mode:'desktop',view:'invest',wallet:'usd',tab:'browse',pf:null,range:'1Y',wView:'trend',shut:{}};
 const e=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function go(o={}){Object.assign(S,o);render();window.scrollTo({top:0,behavior:'instant'});}
 
@@ -389,65 +439,112 @@ const TARA=[
   {k:'Debt',t:'Your credit card is 78% utilised',d:'Relevant to Debt, not to Invest.',a:'',c:'',in:0}
 ];
 
+/* ===== My Wealth: display currency USD, ZAR converted at 18.42 =====
+   Wallet balances are CASH ONLY (Greg's rule); invested value sits in the
+   Investments group, so the two groups reconcile with the Investments module. */
+const NW=[88400,90100,91850,90980,93400,95120,94600,96880,98410,99240,100880,101692];
+const ASSETS=[
+  {k:'wal',n:'Cash',ic:'wallet',tot:10285.02,rows:[
+    {n:'US dollar account',t:'Alpaca cash · USD',v:'$10,000.00',wal:'usd'},
+    {n:'South African account',t:'Vault22 cash · ZAR',v:'$285.02',wal:'zar'}]},
+  {k:'inv',n:'Investment',ic:'chart',tot:4651.55,rows:[
+    {n:'US equities & portfolios',t:'Alpaca · USD',v:'$2,480.00',wal:'usd'},
+    {n:'SA portfolios & equities',t:'Vault22 · ZAR',v:'$2,171.55',wal:'zar'}]},
+  {k:'bank',n:'Bank',ic:'bank',tot:1026.29,rows:[
+    {n:'Capitec Cheque',t:'Bank · ZAR',v:'$1,026.29',wal:null}]},
+  {k:'ret',n:'Retirement Fund',ic:'shield',tot:45717.16,rows:[
+    {n:'Allan Gray Retirement Annuity',t:'Retirement · ZAR',v:'$45,717.16',wal:null}]},
+  {k:'re',n:'Real Estate',ic:'home',tot:135000,rows:[
+    {n:'Primary residence',t:'Real estate · ZAR',v:'$135,000.00',wal:null}]}
+];
+const LIABS=[
+  {k:'hl',n:'Home Loan',ic:'home',tot:88400,rows:[
+    {n:'Capitec Bond',t:'Home loan · ZAR',v:'$88,400.00',wal:null}]},
+  {k:'vl',n:'Vehicle Loan',ic:'car',tot:6240,rows:[
+    {n:'Vehicle finance',t:'Vehicle loan · ZAR',v:'$6,240.00',wal:null}]},
+  {k:'cc',n:'Credit Card',ic:'card',tot:348.04,rows:[
+    {n:'Discovery Credit Card',t:'Credit card · ZAR',v:'$348.04',wal:null}]}
+];
+const GIC={
+  wallet:'<rect x="2.5" y="7" width="19" height="10" rx="2"/><circle cx="12" cy="12" r="2.2"/><path d="M6 12h.01M18 12h.01"/>',
+  chart:'<path d="M4 19V5M4 19h16M8 15l4-5 3 3 4-6"/>',
+  bank:'<path d="M3 10 12 4l9 6H3z"/><path d="M6 10v8M10 10v8M14 10v8M18 10v8"/><path d="M4 20h16"/>',
+  shield:'<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>',
+  home:'<path d="M3 10.5 12 3l9 7.5V21H3z"/>',
+  card:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>',
+  car:'<path d="M5 16h14"/><path d="M6 16l1-5h10l1 5"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/>'
+};
+const AT=ASSETS.reduce((a,g)=>a+g.tot,0), LT=LIABS.reduce((a,g)=>a+g.tot,0);
+
 /* ================= chart ================= */
-function perfChart(pf){
-  const s=pf.series, W_=680, H=190, pad={l:38,r:16,t:12,b:24};
-  const iw=W_-pad.l-pad.r, ih=H-pad.t-pad.b;
+const CW=680, CH=190, CP={l:46,r:16,t:12,b:24};
+const CIW=CW-CP.l-CP.r, CIH=CH-CP.t-CP.b;
+const MONTHS=['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+function cgeom(s){
   const mn=Math.min(...s), mx=Math.max(...s);
   const lo=mn-(mx-mn)*0.18, hi=mx+(mx-mn)*0.12;
-  const X=i=>pad.l+(i/(s.length-1))*iw;
-  const Y=v=>pad.t+ih-((v-lo)/(hi-lo))*ih;
+  return {lo,hi,X:i=>CP.l+(i/(s.length-1))*CIW, Y:v=>CP.t+CIH-((v-lo)/(hi-lo))*CIH};
+}
+/* Single-series area chart. One series, so no legend — the card title names it.
+   Axis labels and the endpoint value are always visible, which is the relief the
+   green needs at 2.3:1 against white. */
+function areaChart(o){
+  const s=o.series, g=cgeom(s), {X,Y,lo,hi}=g;
   const line=s.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(' ');
-  const area=`${line} L${X(s.length-1).toFixed(1)} ${(pad.t+ih).toFixed(1)} L${X(0).toFixed(1)} ${(pad.t+ih).toFixed(1)} Z`;
-  const months=['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+  const area=`${line} L${X(s.length-1).toFixed(1)} ${(CP.t+CIH).toFixed(1)} L${X(0).toFixed(1)} ${(CP.t+CIH).toFixed(1)} Z`;
   const gy=[0,.5,1].map(f=>lo+(hi-lo)*f);
-  const last=s[s.length-1], gain=(last-100).toFixed(1);
+  const last=s[s.length-1];
   return `
   <div class="chartwrap">
-    <svg class="perf" viewBox="0 0 ${W_} ${H}" role="img"
-      aria-label="Performance of ${e(pf.n)} over 12 months, indexed to 100. Ends at ${last.toFixed(1)}, up ${gain} percent.">
-      ${gy.map(v=>`<line x1="${pad.l}" x2="${W_-pad.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="#E6EBF1" stroke-width="1"/>`).join('')}
-      ${gy.map(v=>`<text class="axl" x="${pad.l-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end">${v.toFixed(0)}</text>`).join('')}
-      ${months.map((m,i)=>i%3===0||i===11?`<text class="axl" x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="${i===0?'start':i===11?'end':'middle'}">${m}</text>`:'').join('')}
+    <svg class="perf" viewBox="0 0 ${CW} ${CH}" role="img" aria-label="${e(o.aria)}">
+      ${gy.map(v=>`<line x1="${CP.l}" x2="${CW-CP.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="#E6EBF1" stroke-width="1"/>`).join('')}
+      ${gy.map(v=>`<text class="axl" x="${CP.l-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end">${o.yfmt(v)}</text>`).join('')}
+      ${MONTHS.map((m,i)=>i%3===0||i===11?`<text class="axl" x="${X(i).toFixed(1)}" y="${CH-6}" text-anchor="${i===0?'start':i===11?'end':'middle'}">${m}</text>`:'').join('')}
       <path d="${area}" fill="#2FBE79" fill-opacity=".13"/>
       <path d="${line}" fill="none" stroke="#12855A" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-      <line id="cx" x1="0" x2="0" y1="${pad.t}" y2="${pad.t+ih}" stroke="#12855A" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+      <line id="cx" x1="0" x2="0" y1="${CP.t}" y2="${CP.t+CIH}" stroke="#12855A" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
       <circle id="cd" r="5" fill="#12855A" stroke="#fff" stroke-width="2" opacity="0"/>
       <circle cx="${X(s.length-1).toFixed(1)}" cy="${Y(last).toFixed(1)}" r="4.5" fill="#12855A" stroke="#fff" stroke-width="2"/>
       <text class="axl" x="${(X(s.length-1)-6).toFixed(1)}" y="${(Y(last)-11).toFixed(1)}" text-anchor="end"
-        style="fill:#12855A;font-weight:700;font-size:11px">${last.toFixed(1)}</text>
-      <rect id="hit" x="${pad.l}" y="${pad.t}" width="${iw}" height="${ih}" fill="transparent" style="cursor:crosshair"/>
+        style="fill:#12855A;font-weight:700;font-size:11px">${o.fmt(last)}</text>
+      <rect id="hit" x="${CP.l}" y="${CP.t}" width="${CIW}" height="${CIH}" fill="transparent" style="cursor:crosshair"/>
     </svg>
     <div class="ctip" id="ctip"></div>
-  </div>
-  <p class="hint" style="margin:10px 0 0">Indexed to 100 at start. Past performance is not a guide to future returns.</p>`;
+  </div>`;
 }
-function wireChart(pf){
+function wireArea(o){
   const svg=document.querySelector('svg.perf'); if(!svg) return;
-  const s=pf.series, W_=680, pad={l:38,r:16,t:12,b:24}, H=190;
-  const iw=W_-pad.l-pad.r, ih=H-pad.t-pad.b;
-  const mn=Math.min(...s), mx=Math.max(...s), lo=mn-(mx-mn)*0.18, hi=mx+(mx-mn)*0.12;
-  const X=i=>pad.l+(i/(s.length-1))*iw, Y=v=>pad.t+ih-((v-lo)/(hi-lo))*ih;
-  const months=['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
-  const cx=svg.querySelector('#cx'), cd=svg.querySelector('#cd'), tip=document.getElementById('ctip');
-  const hit=svg.querySelector('#hit');
+  const s=o.series, {X,Y}=cgeom(s);
+  const cx=svg.querySelector('#cx'), cd=svg.querySelector('#cd'), tip=document.getElementById('ctip'), hit=svg.querySelector('#hit');
+  if(!hit) return;
   const show=ev=>{
     const r=svg.getBoundingClientRect();
-    const px=(ev.clientX-r.left)/r.width*W_;
-    let i=Math.round((px-pad.l)/iw*(s.length-1));
+    const px=(ev.clientX-r.left)/r.width*CW;
+    let i=Math.round((px-CP.l)/CIW*(s.length-1));
     i=Math.max(0,Math.min(s.length-1,i));
     cx.setAttribute('x1',X(i)); cx.setAttribute('x2',X(i)); cx.setAttribute('opacity','1');
     cd.setAttribute('cx',X(i)); cd.setAttribute('cy',Y(s[i])); cd.setAttribute('opacity','1');
     tip.style.opacity='1';
-    tip.style.left=(X(i)/W_*r.width)+'px';
-    tip.style.top=(Y(s[i])/H*r.height)+'px';
-    tip.innerHTML=`${months[i]} · <span class="cv">${s[i].toFixed(1)}</span>`;
+    tip.style.left=(X(i)/CW*r.width)+'px';
+    tip.style.top=(Y(s[i])/CH*r.height)+'px';
+    tip.innerHTML=`${MONTHS[i]} · <span class="cv">${o.fmt(s[i])}</span>`;
   };
   const hide=()=>{cx.setAttribute('opacity','0');cd.setAttribute('opacity','0');tip.style.opacity='0';};
   hit.addEventListener('mousemove',show);
   hit.addEventListener('mouseleave',hide);
   hit.addEventListener('touchmove',ev=>{ev.preventDefault();show(ev.touches[0]);},{passive:false});
   hit.addEventListener('touchend',hide);
+}
+const usd0=v=>'$'+Math.round(v).toLocaleString('en-US');
+function perfChart(pf){
+  return areaChart({series:pf.series, fmt:v=>v.toFixed(1), yfmt:v=>v.toFixed(0),
+    aria:`Performance of ${pf.n} over 12 months, indexed to 100. Ends at ${pf.series[pf.series.length-1].toFixed(1)}.`})
+  + `<p class="hint" style="margin:10px 0 0">Indexed to 100 at start. Past performance is not a guide to future returns.</p>`;
+}
+function nwChart(){
+  return areaChart({series:NW, fmt:usd0, yfmt:v=>'$'+Math.round(v/1000)+'k',
+    aria:`Net worth over 12 months, ending ${usd0(NW[NW.length-1])}.`})
+  + `<p class="hint" style="margin:10px 0 0">Net worth after liabilities, in your display currency. Synced daily.</p>`;
 }
 
 /* ================= sidebar ================= */
@@ -610,30 +707,76 @@ function viewPfDetail(){
 }
 
 /* ================= my wealth ================= */
+function grp(g,neg){
+  const shut=!!S.shut[g.k];
+  return `<div class="grp">
+    <button class="ghead" onclick="S.shut['${g.k}']=${shut?'false':'true'};render()">
+      <span class="gic">${ic2(GIC[g.ic])}</span>
+      <span class="gn">${e(g.n)}<span class="gc">${g.rows.length} account${g.rows.length>1?'s':''}</span></span>
+      <span class="gt num ${neg?'neg':''}">${neg?'−':''}${usd0(g.tot)}</span>
+      <span class="gch ${shut?'sh':''}">${ic2('<path d="M6 15l6-6 6 6"/>')}</span>
+    </button>
+    ${shut?'':`<div class="glist">${g.rows.map(r=>`<div class="grow">
+      <span class="ric">${ic2(GIC[g.ic])}</span>
+      <span class="rn"><b>${e(r.n)}</b><span>${e(r.t)}</span></span>
+      ${r.wal?`<span class="pill gs" style="cursor:pointer;margin-right:10px" onclick="go({view:'invest',wallet:'${r.wal}',tab:'browse',pf:null})">Trade →</span>`:''}
+      <span class="rv num ${neg?'neg':''}">${neg?'−':''}${e(r.v)}</span>
+    </div>`).join('')}</div>`}
+  </div>`;
+}
+function ic2(d){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;}
+
 function viewWealth(){
-  const rows=[
-    {n:'US dollar account',t:'Investment account · Alpaca · USD',v:'$12,480.00',d:'+$480.00',up:1,wal:'usd'},
-    {n:'Vault22 Rand account',t:'Investment account · Vault22 · ZAR',v:'R 45,250.00',d:'+R 1,842.50',up:1,wal:'zar'},
-    {n:'Capitec Cheque',t:'Bank account · ZAR',v:'R 18,904.22',d:'—',up:1,wal:null},
-    {n:'Discovery Credit Card',t:'Credit card · ZAR',v:'-R 6,410.88',d:'—',up:0,wal:null},
-    {n:'Allan Gray Retirement Annuity',t:'Retirement · ZAR',v:'R 842,110.00',d:'+R 12,480.00',up:1,wal:null}
-  ];
+  const nw=AT-LT;
+  const first=NW[0], grow=nw-first, growpc=(grow/first*100).toFixed(1);
+  const views=[['list','<path d="M4 6h16M4 12h16M4 18h16"/>'],['trend','<path d="M4 17l5-6 4 3 7-8"/>']];
   return `<main class="main">
-    <div class="crumb"><b>My Wealth</b><span>›</span><b>Accounts</b></div>
-    <h2 class="page">My Wealth</h2>
-    <div class="note"><b>No wallet section, and no wallet wording.</b> Both trading accounts sit in the accounts list alongside your bank, card and retirement accounts. This view answers "what am I worth" — trading stays under Investments.</div>
-    <div class="card">
-      <div class="sec-t">Accounts <span class="r">+ Link account</span></div>
-      <p class="hint">Net worth <b style="color:var(--ink);font-family:Outfit,sans-serif">R 1,127,340.61</b> across ${rows.length} accounts.</p>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Account</th><th>Type</th><th class="r">Balance</th><th class="r">Change</th><th class="r"></th></tr></thead>
-        <tbody>${rows.map(r=>`<tr>
-          <td><b>${e(r.n)}</b></td><td>${e(r.t)}</td>
-          <td class="r num" style="${r.up?'':'color:var(--red)'}">${e(r.v)}</td>
-          <td class="r num ${r.d==='—'?'':'up'}">${e(r.d)}</td>
-          <td class="r">${r.wal?`<span class="pill gs" style="cursor:pointer" onclick="go({view:'invest',wallet:'${r.wal}',tab:'browse',pf:null})">Trade →</span>`:''}</td>
-        </tr>`).join('')}</tbody></table></div>
-    </div></main>`;
+    <h2 class="page" style="margin-bottom:5px">My Wealth</h2>
+    <p class="sub-lede" style="margin-bottom:14px">Track all your assets and liabilities to see your complete financial picture</p>
+
+    <div class="wbar">
+      <button class="btn">↓ Upload statement</button>
+      <button class="btn">◷ Import history</button>
+      <div class="vtog">${views.map(([k,d])=>`<button class="vt ${S.wView===k?'on':''}" title="${k}" onclick="go({wView:'${k}'})">${ic2(d)}</button>`).join('')}</div>
+    </div>
+
+    <div class="nwrow">
+      <div class="nwhero">
+        <div class="k">Net worth</div>
+        <div class="v num">${usd0(nw)}</div>
+        <div class="s num up">+${usd0(grow)} · +${growpc}% over 12 months</div>
+      </div>
+      <div class="nwt">
+        <div class="k">Assets</div>
+        <div class="v num pos">${usd0(AT)}</div>
+        <div class="s">${ASSETS.reduce((a,g)=>a+g.rows.length,0)} accounts in ${ASSETS.length} groups</div>
+      </div>
+      <div class="nwt">
+        <div class="k">Liabilities</div>
+        <div class="v num neg">−${usd0(LT)}</div>
+        <div class="s">${LIABS.reduce((a,g)=>a+g.rows.length,0)} accounts in ${LIABS.length} groups</div>
+      </div>
+    </div>
+
+    ${S.wView==='trend'?`<div class="card" style="margin-bottom:16px">
+      <div class="sec-t">Net worth trend <span class="pill o">12 months</span></div>
+      ${nwChart()}
+    </div>`:''}
+
+    <div class="gsec">
+      <div class="gsech"><span class="gdot pos"></span><h3>Assets</h3><span class="gsum num pos">${usd0(AT)}</span>
+        <div class="gact"><button class="btn sm">↻ Update accounts</button><button class="btn sm p">+ Add account</button></div></div>
+      ${ASSETS.map(g=>grp(g,false)).join('')}
+    </div>
+
+    <div class="gsec">
+      <div class="gsech"><span class="gdot neg"></span><h3>Liabilities</h3><span class="gsum num neg">−${usd0(LT)}</span>
+        <div class="gact"><button class="btn sm p">+ Add account</button></div></div>
+      ${LIABS.map(g=>grp(g,true)).join('')}
+    </div>
+
+    <div class="note" style="margin:18px 0 0"><b>Why the numbers reconcile.</b> A trading account shows <b>cash only</b> here, per Greg's rule; its invested value sits in the Investment group. So the two trading accounts appear twice — once as cash, once as holdings — and neither is double-counted. Everything is shown in your display currency, with the account's own currency named underneath.</div>
+  </main>`;
 }
 
 /* ================= what changed ================= */
@@ -830,7 +973,8 @@ function render(){
       ${S.mode==='desktop'?sidebar():''}${inner}
     </div></div></div>`;
 
-  if(S.mode==='desktop'&&S.view==='pfdetail') wireChart(PF[S.pf]||PF.nacon);
+  if(S.mode==='desktop'&&S.view==='pfdetail') wireArea({series:(PF[S.pf]||PF.nacon).series, fmt:v=>v.toFixed(1)});
+  if(S.mode==='desktop'&&S.view==='mywealth'&&S.wView==='trend') wireArea({series:NW, fmt:usd0});
 }
 render();
 </script>

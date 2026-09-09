@@ -118,7 +118,7 @@ h2.page{font-size:29px; font-weight:600; letter-spacing:-.028em; margin:0 0 7px}
 
 /* ---------- hero summary (single, replaces wallet cards) ---------- */
 .hero{border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); margin-bottom:20px; background:var(--card)}
-.hero-top{background:linear-gradient(135deg,var(--teal),var(--teal-600)); padding:20px 24px 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap}
+.hero-top{background:linear-gradient(135deg,#01C38D,#038F69); padding:20px 24px 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap}
 .hero-top .k{font-family:Inter,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.85); width:100%; margin-bottom:6px}
 .hero-tot{font-family:Inter,sans-serif; font-size:40px; font-weight:600; letter-spacing:-.03em; line-height:1; color:#fff}
 .hero-tot small{font-size:26px; font-weight:500; letter-spacing:.02em; margin-right:10px; color:#fff}
@@ -258,6 +258,37 @@ footer.pf p{margin:0 0 5px}
 .kv p{margin:0 0 12px; font-size:13.5px; color:var(--ink-2)}
 
 /* funding / withdrawal screens */
+/* home */
+.homegrid{display:grid; grid-template-columns:1.2fr 1.15fr .9fr; gap:16px; align-items:stretch}
+@media (max-width:1100px){ .homegrid{grid-template-columns:1fr} }
+.gcard{background:linear-gradient(135deg,#01C38D,#038F69); border-radius:16px; padding:20px 24px 22px; color:#fff; position:relative; overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column}
+.gcard .gc-t{font-family:Inter,sans-serif; font-size:19px; font-weight:600}
+.gcard .gc-k{font-family:Inter,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-top:16px}
+.gcard .gc-k2{font-size:13px; font-weight:500; color:rgba(255,255,255,.8); margin-bottom:5px}
+.gcard .gc-v{font-family:Inter,sans-serif; font-size:clamp(26px,2.3vw,34px); font-weight:600; letter-spacing:-.02em; line-height:1.1; margin-top:3px; white-space:nowrap}
+.gcard .gc-head{display:flex; align-items:center; gap:10px}
+.gc-mark{position:absolute; right:18px; top:16px; width:74px; opacity:.28}
+.gc-mark svg{width:100%; height:auto}
+.nwsplit{display:flex; gap:26px; flex-wrap:wrap; margin-top:auto}
+.chg{display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,.85); color:#374151; border-radius:6px; padding:3px 8px; font-size:11px; font-weight:600; margin-top:8px}
+.wtiles{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px}
+@media (max-width:760px){ .wtiles{grid-template-columns:1fr} }
+.wtile{display:flex; align-items:center; gap:13px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.22); border-radius:12px; padding:14px 16px; cursor:pointer; color:#fff; font:inherit; width:100%; text-align:left}
+.wtile:hover{background:rgba(255,255,255,.26)}
+.wbadge{width:38px; height:38px; border-radius:999px; background:rgba(255,255,255,.28); display:grid; place-items:center; font-family:Inter,sans-serif; font-size:11px; font-weight:700; flex:none}
+.wt-l{display:block; font-size:13px; color:rgba(255,255,255,.85)}
+.wt-v{display:block; font-family:Inter,sans-serif; font-size:20px; font-weight:600; margin-top:2px}
+.viewlink{margin-left:auto; font-family:Inter,sans-serif; font-weight:600; font-size:14px; white-space:nowrap}
+.prow2{display:flex; align-items:center; gap:12px; margin-top:14px}
+.pill.beta{background:#a8bfd9; color:#111827}
+.tasks{display:grid; gap:10px}
+.task{display:flex; align-items:center; gap:10px; border:1px solid var(--line-2); border-radius:12px; padding:12px 14px; background:var(--card); cursor:pointer; font:inherit; text-align:left; width:100%}
+.task:hover{border-color:var(--teal)}
+.tk2{display:block; font-size:14px; color:var(--ink)}
+.pts{display:block; font-size:12.5px; color:var(--muted); margin-top:3px}
+.chev{margin-left:auto; color:var(--faint); font-size:18px}
+.levelup{width:100%; justify-content:center; background:var(--gray-100); border-color:var(--gray-100); color:var(--teal-700)}
+.levelup:hover{background:var(--gray-200)}
 .wdgrid{display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start}
 @media (max-width:900px){ .wdgrid{grid-template-columns:1fr} }
 .wdbal{display:flex; align-items:center; justify-content:space-between; font-size:14px; color:var(--ink-2)}
@@ -296,7 +327,7 @@ footer.pf p{margin:0 0 5px}
 .bankbox table{min-width:0}
 .bankbox td{border-bottom:0; padding:5px 0}
 /* wallet page + add money */
-.whero{background:linear-gradient(135deg,var(--teal),var(--teal-600)); border-radius:16px; padding:22px 24px 20px; color:#fff}
+.whero{background:linear-gradient(135deg,#01C38D,#038F69); border-radius:16px; padding:22px 24px 20px; color:#fff}
 .whero .wh-top{display:flex; align-items:center; gap:10px; font-family:Inter,sans-serif; font-size:15px; font-weight:600}
 .whero .flag{width:30px; height:30px; border-radius:999px; background:rgba(255,255,255,.22); display:grid; place-items:center; font-size:14px}
 .whero .wh-k{font-family:Inter,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-top:18px}
@@ -694,7 +725,7 @@ const IC = {
 function renderSide(){
   const inv = ['invest','portfolio','item','order','wallet','addmoney','withdraw'].includes(S.view), mw = S.view==='mywealth';
   document.getElementById('nav').innerHTML = `
-    <button class="navitem">${icon(IC.home)}<span class="navlbl">Home</span></button>
+    <button class="navitem ${S.view==='home'?'on':''}" onclick="go({view:'home'})">${icon(IC.home)}<span class="navlbl">Home</span></button>
     <button class="navitem">${icon(IC.txn)}<span class="navlbl">Transactions</span></button>
     <button class="navitem">${icon(IC.budget)}<span class="navlbl">Budget</span></button>
     <button class="navitem ${inv?'on':''}" onclick="go({view:'invest'})">${icon(IC.inv)}<span class="navlbl">Investments</span></button>
@@ -2051,6 +2082,100 @@ function doWithdraw(){
   else { toast('Withdrawal of ' + money(amt,d.ccy) + ' requested'); openWallet(d.ccy); }
 }
 
+/* ================= Home ================= */
+/* Mirrors the DashboardV4 widgets in global-website: the wallets card, the
+   net-worth card (#01C38D → #038F69), Profile, Financial Fitness and the
+   net-worth history empty state. */
+const V22MARK = `<svg viewBox="0 0 90 71" fill="none" aria-hidden="true"><path d="M78.024 0H52.8805c-1.6999 0-2.3169 2.14133-.84 2.94574 6.465 3.51978 10.9277 9.53216 11.5805 16.47726v.0567c.0518.5664.0797 1.1405.0797 1.7183 0 .0491 0 .0982 0 .1511l.1552 3.7803c.0637 1.556 2.2333 2.0658 3.0534.7176L80.329 3.79547C81.3561 2.10734 80.0742 0 78.0201 0Z" fill="#fff"/><path d="M32.4919 3.56679C31.1758 1.3701 28.74.0150975 26.1038.0150975h-3.198c-.1689-.01132312-.3379-.0150975-.5068-.0150975H3.18747C.739861 0-.792347 2.54771.43342 4.58587l9.34254 15.55043c.75824 1.2644 2.75404.9096 2.98584-.5322.2161-1.3701.4832-2.6571.7858-3.8461.0157-.566.0275-.117.0392-.1774.4558-2.593 1.4262-4.8198 2.7148-6.35224.5068-.68316 1.049-1.1927 1.6108-1.50598.715-.49444 1.5911-.7889 2.5379-.7889.0786 0 .1533.00754.2318.01132 5.3706.00377 11.853 13.22547 14.6975 30.20637.3614 2.1552.6443 4.2726.8603 6.3297l2.7698 17.5244c.4518 2.8572 4.3963 3.5706 5.901 1.0682l7.386-12.2857s.0118-.0226.0197-.0339l1.8229-3.1063c1.2768-2.1779 1.265-4.8388-.0354-7.0053L32.4919 3.56679Z" fill="#fff"/></svg>`;
+
+function viewHome(){
+  const t = totals();
+  const zarW = walOf('ZAR'), usdW = walOf('USD');
+  const walletTot = zar(zarW.cash,'ZAR') + zar(usdW.cash,'USD');
+  const bank = 18904.22, card = -6410.88;
+  const savings = walletTot + bank + card;
+  const netWorth = savings + t.inv;
+  const tasks = [['Link a bank account',25], ['Add profile picture',5]];
+  const pct = 24;
+
+  return `
+  <div class="crumb"><b>Home</b></div>
+  <h2 class="page">Home</h2>
+
+  <div class="gcard" style="margin-bottom:16px">
+    <div class="gc-t">My wallets</div>
+    <div class="gc-k">Total available</div>
+    <div class="gc-v num">${money(walletTot,'ZAR')}</div>
+    <div class="wtiles">
+      ${[[zarW,'ZA','Rand wallet'],[usdW,'US','Dollar wallet']].map(([w,code,label])=>`
+        <button class="wtile" onclick="openWallet('${w.ccy}')">
+          <span class="wbadge">${code}</span>
+          <span style="text-align:left">
+            <span class="wt-l">${label}</span>
+            <span class="wt-v num">${money(w.cash,w.ccy)}</span>
+          </span>
+          <span class="viewlink">View →</span>
+        </button>`).join('')}
+    </div>
+  </div>
+
+  <div class="homegrid">
+    <div class="gcard">
+      <div class="gc-mark">${V22MARK}</div>
+      <div class="gc-head"><span class="gc-t">Net worth</span></div>
+      <div class="gc-v num" style="margin-bottom:20px">${money0(netWorth,'ZAR')}</div>
+      <div class="nwsplit">
+        <div>
+          <div class="gc-k2">Savings</div>
+          <div class="num" style="font-size:22px;font-weight:600">${money0(savings,'ZAR')}</div>
+          <span class="chg">▲ ${money0(25000,'ZAR')} <span style="opacity:.7">(30 days)</span></span>
+        </div>
+        <div>
+          <div class="gc-k2">Investments</div>
+          <div class="num" style="font-size:22px;font-weight:600">${money0(t.inv,'ZAR')}</div>
+          <span class="chg">▲ +13.0% <span style="opacity:.7">profit</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-t" style="font-size:19px;font-weight:600">Profile</div>
+      <div class="prow2">
+        <span class="num" style="font-size:26px;font-weight:600">${pct}% completed</span>
+        <button class="linkbtn" style="margin-left:auto;padding:0" onclick="toast('Profile completion — not in this prototype')">Complete</button>
+      </div>
+      <div class="bar" style="margin:10px 0 18px"><i style="width:${pct}%"></i></div>
+      <div class="wk" style="margin-bottom:10px">Remaining</div>
+      <div class="tasks">
+        ${tasks.map(([n,p])=>`
+          <button class="task" onclick="toast('${e(n)} — not in this prototype')">
+            <span>
+              <span class="tk2">${e(n)}</span>
+              <span class="pts">★ ${p} pts</span>
+            </span>
+            <span class="chev">›</span>
+          </button>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-t" style="font-size:19px;font-weight:600">Financial Fitness <span class="pill beta">Beta</span></div>
+      <div style="font-family:Inter,sans-serif;font-size:19px;font-weight:600;margin:14px 0 6px">Rookie</div>
+      <div class="num" style="font-size:30px;font-weight:600">0 <span style="font-size:15px;color:var(--muted);font-weight:500">/1000</span></div>
+      <div class="bar" style="margin:12px 0 18px"><i style="width:2%"></i></div>
+      <button class="btn levelup" onclick="toast('Financial Fitness — not in this prototype')">Level up</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="empty" style="padding:44px 4px">
+      <div style="font-size:30px;opacity:.35;margin-bottom:10px">▁▄▆</div>
+      <div style="font-family:Inter,sans-serif;font-size:17px;font-weight:600;color:var(--ink);margin-bottom:6px">No balance history yet</div>
+      <div style="max-width:52ch;margin:0 auto">Your net worth trend will appear here once your accounts have been synced for a few days.</div>
+    </div>
+  </div>`;
+}
+
 /* ================= views ================= */
 const TABS = [['mine','My investments'],['explore','Explore investments'],['txns','Transactions'],['stmts','Statements']];
 function viewInvest(){
@@ -2093,7 +2218,7 @@ function viewWealth(){
 }
 
 /* ================= render ================= */
-const VIEWS = {mywealth:viewWealth, portfolio:viewPortfolio, item:viewItem, order:viewOrder, wallet:viewWallet, addmoney:viewAdd, withdraw:viewWithdraw};
+const VIEWS = {mywealth:viewWealth, portfolio:viewPortfolio, item:viewItem, order:viewOrder, wallet:viewWallet, addmoney:viewAdd, withdraw:viewWithdraw, home:viewHome};
 function render(){
   const af = document.activeElement, fid = af && af.id;
   let pos = null; try{ pos = af && af.selectionStart; }catch(_){}

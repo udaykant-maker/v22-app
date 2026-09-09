@@ -234,6 +234,51 @@ footer.pf p{margin:0 0 5px}
 .kv h4{font-family:Outfit,sans-serif; font-size:13.5px; font-weight:600; margin:0 0 2px}
 .kv p{margin:0 0 12px; font-size:13.5px; color:var(--ink-2)}
 
+/* funding / withdrawal screens */
+.addgrid{display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:16px; align-items:start}
+@media (max-width:1040px){ .addgrid{grid-template-columns:1fr} }
+.addgrid > div > .card + .card{margin-top:14px}
+.tile-k{font-family:Outfit,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--faint)}
+.howrow{display:flex; gap:11px; font-size:13px; color:var(--ink-2); margin-bottom:11px; line-height:1.5}
+.howrow:last-child{margin-bottom:0}
+.howrow .hi{color:var(--green-dark); font-weight:700; flex:none}
+.howrow .hi.fee{color:var(--muted)}
+.wirebox{border:1px solid var(--line-2); border-radius:13px; padding:15px}
+.wirehead{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.wirehead .t{font-family:Outfit,sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2)}
+.wirehead .r{margin-left:auto; font-size:12px; color:var(--muted)}
+.wirebox .seg button{font-size:12px; padding:8px 10px}
+.wrow{display:flex; align-items:center; gap:12px; background:var(--sunk); border:1px solid transparent; border-radius:10px; padding:11px 14px; margin-bottom:8px}
+.wrow.done{background:var(--green-soft); border-color:var(--green-line)}
+.wrow input[type=checkbox]{width:16px; height:16px; accent-color:var(--green); flex:none}
+.wk{font-family:Outfit,sans-serif; font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
+.wrow .wv{font-family:Outfit,sans-serif; font-size:14px; font-weight:600; word-break:break-word; margin-top:2px}
+.bankbox{border:1px solid var(--line-2); border-radius:13px; padding:15px; margin-top:16px}
+.bankbox table{min-width:0}
+.bankbox td{border-bottom:0; padding:5px 0}
+/* wallet page + add money */
+.whero{background:linear-gradient(135deg,var(--green),var(--green-dark)); border-radius:16px; padding:22px 24px 20px; color:#fff}
+.whero .wh-top{display:flex; align-items:center; gap:10px; font-family:Outfit,sans-serif; font-size:15px; font-weight:600}
+.whero .flag{width:30px; height:30px; border-radius:999px; background:rgba(255,255,255,.22); display:grid; place-items:center; font-size:14px}
+.whero .wh-k{font-family:Outfit,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-top:18px}
+.whero .wh-v{font-family:Outfit,sans-serif; font-size:38px; font-weight:600; letter-spacing:-.03em; line-height:1.1; margin-top:2px}
+.whero .wh-p{font-size:12.5px; color:rgba(255,255,255,.85); margin-top:4px}
+.whero .wh-acts{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap}
+.whero .wh-p1{background:#fff; border-color:#fff; color:var(--ink)}
+.whero .wh-p2{background:transparent; border-color:rgba(255,255,255,.55); color:#fff}
+.whero .wh-p2:hover{background:rgba(255,255,255,.12)}
+.amtwrap{display:flex; align-items:center; gap:10px; border:1px solid var(--line-2); border-radius:11px; padding:2px 14px; background:var(--card)}
+.amtwrap:focus-within{outline:2px solid var(--green); outline-offset:1px}
+.amtpre{font-family:Outfit,sans-serif; font-size:22px; font-weight:600; color:var(--muted)}
+.amtin{border:0; padding:12px 0; flex:1; min-width:0}
+.amtin:focus{outline:none}
+.pcts button.on{border-color:var(--green); background:var(--green-soft); color:#2D8E6C}
+.ozow{display:flex; align-items:center; gap:9px; font-family:Outfit,sans-serif; font-size:19px; font-weight:700; letter-spacing:.04em; color:#0A1A28}
+.ozow .odot{width:20px; height:20px; border-radius:999px; border:3px solid #00C896; box-shadow:inset 0 0 0 3px #fff}
+.ozow .osub{font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); border:1px solid var(--line-2); border-radius:6px; padding:2px 7px}
+.donewrap{text-align:center; padding:34px 0 20px}
+.donemark{width:74px; height:74px; border-radius:999px; background:var(--green-soft); color:#2D8E6C; display:grid; place-items:center; font-size:32px; margin:0 auto 18px}
+.donemark.bad{background:var(--red-soft); color:var(--red)}
 .tara{margin-bottom:20px}
 .tarahead{display:flex; align-items:center; gap:9px; margin-bottom:10px}
 .tarahead .t{font-family:Outfit,sans-serif; font-size:13px; font-weight:600}
@@ -380,7 +425,7 @@ const S = {
   view:'invest', tab:'mine',
   pf:null, item:null, ord:null, pfRange:'1Y', inRange:'1Y',
   rec:{on:false, amt:'1000', freq:'Monthly', start:'2026-10-01'},
-  walletOpen:false,
+  walletOpen:false, wal:'ZAR', add:null, wd:null,
   mine:{region:'', type:'', q:''},
   exp:{region:'', type:'', risk:'', ccy:'', q:''},
   txn:'',
@@ -608,7 +653,7 @@ const IC = {
   ins:'<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>'
 };
 function renderSide(){
-  const inv = ['invest','portfolio','item','order'].includes(S.view), mw = S.view==='mywealth';
+  const inv = ['invest','portfolio','item','order','wallet','addmoney','withdraw'].includes(S.view), mw = S.view==='mywealth';
   document.getElementById('nav').innerHTML = `
     <button class="navitem">${icon(IC.home)}<span class="navlbl">Home</span></button>
     <button class="navitem">${icon(IC.txn)}<span class="navlbl">Transactions</span></button>
@@ -1100,7 +1145,7 @@ function viewPortfolio(){
     <span class="wl">Wallet · available to invest</span>
     <span class="wv num">${money0(w.cash,p.ccy)}</span>
     <span class="acctno" title="Your wallet account number, shown so you can quote it to support.">Account #: ${e(p.walletNo)}</span>
-    <button class="btn p sm" style="margin-left:auto" onclick="toast('Top up — Ozow / bank transfer, not in this prototype')">Top up</button>
+    <button class="btn p sm" style="margin-left:auto" onclick="openAdd('${p.ccy}')">Add money</button>
   </div>
   <div class="mstrip">
     <b style="font-family:Outfit,sans-serif;font-size:15px">Managed account</b>
@@ -1391,7 +1436,7 @@ function viewOrder(){
   ${buying&&short>0?`<div class="card">
     <div class="sec-t">Top up your wallet to continue</div>
     <p class="hint">You need ${money(short,t.ccy)} more. ${t.ccy==='ZAR'?'Add cash with Ozow — your balance updates once the payment confirms.':'Add cash by bank transfer (ACH) — your balance updates once the transfer settles.'}</p>
-    <button class="btn p" onclick="toast('Top up — not in this prototype')">+ Top up ${e(t.ccy)} wallet</button>
+    <button class="btn p" onclick="openAdd('${t.ccy}')">+ Add money to your ${e(t.ccy)} wallet</button>
   </div>`:''}
 
   <div class="card">
@@ -1453,12 +1498,12 @@ function walletDoc(){
         <div class="tablewrap"><table>
           <thead><tr><th>Wallet</th><th>Region</th><th class="r">Balance</th><th class="r"></th></tr></thead>
           <tbody>${WALLETS.map(w=>`<tr>
-            <td><b>${e(w.n)}</b><span class="sub2">${e(w.ccy==='ZAR'?'ZAR-WLT-100482':'USD-WLT-100482')}</span></td>
+            <td><b style="cursor:pointer" onclick="openWallet('${w.ccy}')">${e(w.n)}</b><span class="sub2">${e(w.ccy==='ZAR'?'ZAR-WLT-100482':'USD-WLT-100482')}</span></td>
             <td>${e(w.region)}<span class="sub2">${e(w.ccy)}</span></td>
             <td class="r num"><b>${money(w.cash,w.ccy)}</b><span class="sub2">${zarFmt(zar(w.cash,w.ccy))}</span></td>
             <td class="r" style="white-space:nowrap">
-              <button class="btn sm" onclick="toast('Top up — not in this prototype')">Top up</button>
-              <button class="btn sm" onclick="toast('Withdraw — not in this prototype')">Withdraw</button>
+              <button class="btn sm" onclick="openAdd('${w.ccy}')">${e(FUNDING[w.ccy].cta)}</button>
+              <button class="btn sm" onclick="openWallet('${w.ccy}')">Open wallet</button>
             </td>
           </tr>`).join('')}</tbody>
         </table></div>
@@ -1488,6 +1533,361 @@ function taraStrip(){
     <div class="tstrip">${TARA.map(t=>`<div class="tcard ${t.c}">
       <div class="tk">${e(t.k)}</div><div class="tt">${e(t.t)}</div><div class="td">${e(t.d)}</div>
       ${t.a?`<div class="ta" onclick="${t.go}">${e(t.a)} &rarr;</div>`:''}</div>`).join('')}</div></div>`;
+}
+
+/* ================= wallet page + add money ================= */
+/* The two wallets fund differently: the rand side is an Ozow instant EFT that
+   redirects out and confirms in seconds; the dollar side is an ACH pull from the
+   one registered bank account, which settles over days. Everything else matches. */
+const FUNDING = {
+  /* Rand: Ozow instant EFT — you enter an amount and pay. */
+  ZAR:{ mode:'pay', cta:'Add money', method:'Ozow', min:100, chips:[100,500,1000,2000],
+        blurb:'Top up your South Africa wallet with Ozow.',
+        settle:'as soon as Ozow confirms the payment',
+        done:'Your top-up was successful. Your South Africa wallet balance updates as soon as Ozow confirms the payment.',
+        status:'Settled' },
+  /* Global: we do not pull the money — we hand you the broker's wire details and
+     you instruct your own bank. No amount, no confirm step. */
+  USD:{ mode:'wire', cta:'Add funds',
+        blurb:'Use these broker wallet details when instructing your bank transfer.',
+        how:[
+          ['✓','Wire USD from your bank using the instructions below.'],
+          ['✓','Funds typically arrive in 1–2 business days.'],
+          ['✓','Bank account must be in your legal name.'],
+          ['$',"Vault22 doesn't charge a deposit fee. Your bank may."]
+        ],
+        holder:'Udaykant Tiwari', acct:'···· 8001',
+        withdraw:{
+          rail:'Withdraws via SWIFT wire · $35 fee', fee:35,
+          who:'Enter the bank account to withdraw to — it must be in your legal name.',
+          only:'Only one withdrawal account is allowed at a time — the same one you funded your wallet from. Changing it replaces the current one and may require re-verification.',
+          feeNote:'SWIFT withdrawals incur a $35 fee. Local-rails withdrawals are free.',
+          acctNote:'This is the bank account you registered during sign-up. To change it, contact support.',
+          how:[
+            ['✓','Withdrawals go back to the same bank you funded your wallet from.'],
+            ['✓','Bank account must be in your legal name.'],
+            ['✓','USD wires settle in 1–3 business days.'],
+            ['✓','Local rails (ACH, SEPA, BACS, Faster Payments) settle same / next day.'],
+            ['$','$35 SWIFT withdrawal fee · free for local rails.']
+          ]},
+        rails:{
+          'SWIFT wire · USD':{
+            note:'Send from a USD-currency account using the <b>SWIFT wire · USD</b> details below. Choose the option that matches the bank and currency you are sending from.',
+            fields:[
+              ['Beneficiary name','Alpaca Securities LLC','The account is held in the broker\u2019s name, not yours.'],
+              ['Beneficiary bank','The Currency Cloud Limited',''],
+              ['Beneficiary bank address','1 Sheldon Square, London, W2 6TT, United Kingdom','Your bank may ask for this in full.'],
+              ['Bank country','GB',''],
+              ['IBAN','GB39TCCL04140480135934','International account number \u2014 copy it without spaces.'],
+              ['SWIFT / BIC','TCCLGB3L','Identifies the receiving bank.']
+            ]},
+          'Local rails (ACH) · USD':{
+            note:'Send from a US bank account by <b>ACH</b>. Cheapest and slowest of the three \u2014 allow the full 1\u20132 business days.',
+            fields:[
+              ['Beneficiary name','Alpaca Securities LLC',''],
+              ['Beneficiary bank','Community Federal Savings Bank',''],
+              ['Beneficiary bank address','89-16 Jamaica Ave, Woodhaven, NY 11421, United States',''],
+              ['Bank country','US',''],
+              ['Account number','8313990000123456','Specimen number for this prototype.'],
+              ['Routing number (ACH)','026073150','ACH only \u2014 a domestic wire uses a different number.'],
+              ['Account type','Checking','']
+            ]},
+          'Local rails (Domestic wire) · USD':{
+            note:'Send from a US bank account by <b>domestic wire</b> (Fedwire). Usually same-day if your bank sends before its cut-off.',
+            fields:[
+              ['Beneficiary name','Alpaca Securities LLC',''],
+              ['Beneficiary bank','Community Federal Savings Bank',''],
+              ['Beneficiary bank address','89-16 Jamaica Ave, Woodhaven, NY 11421, United States',''],
+              ['Bank country','US',''],
+              ['Account number','8313990000123456','Specimen number for this prototype.'],
+              ['Routing number (wire)','026073008','Fedwire only \u2014 ACH uses a different number.']
+            ]}
+        }}
+};
+const walOf = ccy => WALLETS.find(w=>w.ccy===ccy);
+function openWallet(ccy){ go({view:'wallet', wal:ccy, walletOpen:false}); }
+function openAdd(ccy){
+  const f = FUNDING[ccy];
+  go({view:'addmoney', wal:ccy, walletOpen:false,
+      add:{step:'amount', amt:'', ccy, rail:Object.keys(f.rails||{})[0], ticked:{}}});
+}
+function copyField(k, v){
+  const done = () => { S.add.ticked[k] = true; render(); toast('Copied · ' + k); };
+  try { navigator.clipboard.writeText(v).then(done, fallback); } catch(_) { fallback(); }
+  function fallback(){
+    const t = document.createElement('textarea');
+    t.value = v; t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); } catch(_){}
+    t.remove(); done();
+  }
+}
+
+function viewWallet(){
+  const w = walOf(S.wal), f = FUNDING[S.wal];
+  const dfmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const rows = TXNS.filter(t => t.acc.includes('wallet') && t.ccy===w.ccy);
+  return `
+  <button class="back" onclick="go({view:'invest',tab:'mine'})">← Back to My investments</button>
+  <div class="crumb"><b>Investments</b><span>›</span><b>${e(w.n)}</b></div>
+
+  <div class="whero">
+    <div class="wh-top"><span class="flag">${w.ccy==='ZAR'?'🇿🇦':'🇺🇸'}</span> ${e(w.n)}</div>
+    <div class="wh-k">Available balance</div>
+    <div class="wh-v num">${money(w.cash,w.ccy)}</div>
+    ${w.pending?`<div class="wh-p num">${money(w.pending,w.ccy)} pending · clears ${e(f.settle)}</div>`:''}
+    <div class="wh-acts">
+      <button class="btn wh-p1" onclick="openAdd('${w.ccy}')">${e(f.cta)}</button>
+      <button class="btn wh-p2" onclick="${f.withdraw?`openWithdraw('${w.ccy}')`:`toast('Rand withdrawal journey — screenshots pending')`}">Withdraw</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="sec-t">Transactions <span class="pill o">${rows.length}</span></div>
+    <p class="hint">Money in and out of this wallet. Buys and sells sit under the investment account, not here.</p>
+    ${rows.length?`<div class="tablewrap"><table>
+      <thead><tr><th>Activity</th><th>Date</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
+      <tbody>${rows.map(t=>`<tr>
+        <td><b>${e(t.t)}</b></td>
+        <td class="num">${dfmt(t.d)}</td>
+        <td class="r num ${t.a<0?'down':'up'}">${t.a<0?'-':'+'}${money(t.a,t.ccy)}</td>
+        <td class="r"><span class="pill ${t.s==='Pending'?'a':'gs'}">${e(t.s)}</span></td>
+      </tr>`).join('')}</tbody>
+    </table></div>`:`<div class="empty">No wallet activity yet.</div>`}
+  </div>`;
+}
+
+function viewAdd(){
+  const a = S.add, w = walOf(a.ccy), f = FUNDING[a.ccy];
+  if(f.mode === 'wire') return viewWire();
+  const amt = parseFloat(a.amt)||0;
+  const crumb = `<div class="crumb"><b>Investments</b><span>›</span><span style="cursor:pointer" onclick="openWallet('${a.ccy}')">${e(w.n)}</span><span>›</span><b>Add money</b></div>`;
+
+  if(a.step==='amount') return `
+  <button class="back" onclick="openWallet('${a.ccy}')">← Back to ${e(w.n)}</button>
+  ${crumb}
+  <h2 class="page">Add money</h2>
+  <p class="asat">${e(f.blurb)}</p>
+  <div class="card" style="max-width:620px">
+    <div class="flabel">Amount</div>
+    <div class="amtwrap">
+      <span class="amtpre">${ccyPre(a.ccy).trim()}</span>
+      <input class="bignum num amtin" type="text" inputmode="decimal" id="addamt" placeholder="0.00" value="${e(a.amt)}" oninput="S.add.amt=numIn(this.value); render()">
+    </div>
+    <div class="pcts">${f.chips.map(c=>`<button class="${amt===c?'on':''}" onclick="S.add.amt='${c}'; render()">${money0(c,a.ccy)}</button>`).join('')}</div>
+    <p class="fnote">Minimum ${money0(f.min,a.ccy)} · paid by ${e(f.method)}${f.bank?' from '+e(f.bank):''}.</p>
+    <div class="btnrow">
+      <button class="btn p" style="min-width:200px" ${amt>=f.min?'':'disabled'} onclick="S.add.step='review'; render()">Continue</button>
+    </div>
+    ${amt>0&&amt<f.min?`<p class="fnote" style="color:var(--red)">Minimum top-up is ${money0(f.min,a.ccy)}.</p>`:''}
+  </div>`;
+
+  if(a.step==='review') return `
+  <button class="back" onclick="S.add.step='amount'; render()">← Back</button>
+  ${crumb}
+  <h2 class="page">Add money</h2>
+  <p class="asat">${e(f.blurb)}</p>
+  <div class="card" style="max-width:620px">
+    <div class="cost" style="padding:8px 18px"><table><tbody>
+      <tr><td>Amount</td><td class="r num"><b>${money(amt,a.ccy)}</b></td></tr>
+      <tr><td>Payment method</td><td class="r"><b>${e(f.method)}</b>${f.bank?`<span class="sub2">${e(f.bank)}</span>`:''}</td></tr>
+      <tr><td>Fee</td><td class="r num">${money(0,a.ccy)}</td></tr>
+      <tr><td><b>Total</b></td><td class="r num"><b>${money(amt,a.ccy)}</b></td></tr>
+    </tbody></table></div>
+    ${f.redirect
+      ? `<div class="info">You will be taken to Ozow to pay from your bank, then brought straight back here.</div>`
+      : `<div class="info">We pull the money from your registered bank account. Only one bank account can be linked at a time — to change it, unlink the current one first.</div>`}
+    <p class="fnote">By continuing you agree to Vault22's <span class="dfn">Terms &amp; Conditions</span>.</p>
+    <div class="btnrow">
+      <button class="btn" onclick="S.add.step='amount'; render()">Back</button>
+      <button class="btn p" style="min-width:200px" onclick="S.add.step='${f.redirect?'redirect':'done'}'; ${f.redirect?'':'creditWallet()'} render()">${f.redirect?'Confirm &amp; pay':'Confirm transfer'}</button>
+    </div>
+  </div>`;
+
+  if(a.step==='redirect') return `
+  ${crumb}
+  <h2 class="page">Taking you to Ozow</h2>
+  <p class="asat">Paying Vault22 South Africa ${money(amt,a.ccy)} · reference: Wallet top-up</p>
+  <div class="card" style="max-width:620px">
+    <div class="ozow"><span class="odot"></span> OZOW <span class="osub">sandbox</span></div>
+    <p class="hint" style="margin:14px 0 6px">In the live journey Ozow's own page opens here and you choose your bank. The sandbox returns one of these instead:</p>
+    <div class="btnrow">
+      <button class="btn p" onclick="creditWallet(); S.add.step='done'; render()">Successful payment</button>
+      <button class="btn" onclick="S.add.step='cancelled'; render()">Cancelled</button>
+    </div>
+  </div>`;
+
+  if(a.step==='cancelled') return `
+  ${crumb}
+  <div class="donewrap">
+    <div class="donemark bad">✕</div>
+    <h2 class="page" style="margin-bottom:6px">Payment cancelled</h2>
+    <p class="hint" style="max-width:44ch;margin:0 auto 18px">Nothing was taken from your bank and your wallet balance has not changed. You can try again whenever you like.</p>
+    <div class="btnrow" style="justify-content:center">
+      <button class="btn p" onclick="S.add.step='amount'; render()">Try again</button>
+      <button class="btn" onclick="openWallet('${a.ccy}')">Back to wallet</button>
+    </div>
+  </div>`;
+
+  return `
+  ${crumb}
+  <div class="donewrap">
+    <div class="donemark">✓</div>
+    <h2 class="page" style="margin-bottom:6px">${f.redirect?'Payment received':'Transfer requested'}</h2>
+    <p class="hint" style="max-width:48ch;margin:0 auto 18px">${e(f.done)}</p>
+    <div class="btnrow" style="justify-content:center">
+      <button class="btn p" onclick="openWallet('${a.ccy}')">Back to wallet</button>
+      <button class="btn" onclick="go({view:'invest',tab:'explore'})">Invest this cash</button>
+    </div>
+  </div>`;
+}
+
+/* Rand tops up straight away; dollar sits pending until the ACH settles. */
+function creditWallet(){
+  const a = S.add, w = walOf(a.ccy), f = FUNDING[a.ccy], amt = parseFloat(a.amt)||0;
+  if(f.redirect) w.cash += amt; else w.pending = (w.pending||0) + amt;
+  TXNS.unshift({d:'2026-09-09', acc:(a.ccy==='ZAR'?'South Africa · wallet':'Global · wallet'), k:'Wallet',
+                t:'Deposit · '+f.method, a:amt, ccy:a.ccy, s:f.status});
+}
+
+/* ---- shared right-hand column ---- */
+function howCard(title, rows){
+  return `<div class="card">
+    <div class="sec-t">${e(title)}</div>
+    ${rows.map(([ic,tx])=>`<div class="howrow"><span class="hi ${ic==='$'?'fee':''}">${ic}</span><span>${tx}</span></div>`).join('')}
+  </div>`;
+}
+function balCard(w, label){
+  return `<div class="card">
+    <div class="tile-k">Available balance</div>
+    <div class="num" style="font-family:Outfit,sans-serif;font-size:30px;font-weight:600;letter-spacing:-.03em;margin-top:2px">${money(w.cash,w.ccy)}</div>
+    <div class="hint" style="margin:2px 0 0">${e(label)}</div>
+  </div>`;
+}
+
+/* ---- Global: wire instructions, not a payment we pull ---- */
+function viewWire(){
+  const a = S.add, w = walOf(a.ccy), f = FUNDING[a.ccy];
+  const rail = f.rails[a.rail] || Object.values(f.rails)[0];
+  const done = rail.fields.filter(([k])=>a.ticked[k]).length;
+  return `
+  <button class="back" onclick="openWallet('${a.ccy}')">← Back</button>
+  <div class="crumb"><b>Investments</b><span>›</span><span style="cursor:pointer" onclick="openWallet('${a.ccy}')">${e(w.n)}</span><span>›</span><b>Add funds</b></div>
+  <div class="dhead">
+    <div>
+      <h2 class="page" style="margin-bottom:2px">Add funds</h2>
+      <p class="asat">Funds available · <b class="num" style="color:var(--ink)">${money(w.cash,w.ccy)}</b></p>
+    </div>
+    <span class="pill o" style="margin-left:auto">● ${e(MARKET[a.ccy].label)}</span>
+  </div>
+
+  <div class="addgrid">
+    <div class="card">
+      <div class="sec-t">Customer funding details</div>
+      <p class="hint">${e(f.blurb)}</p>
+
+      <div class="wirebox">
+        <div class="wirehead">
+          <span class="t">Wire instructions</span>
+          <span class="r">Tick each field as you copy it <span class="i" title="Ticking is just a checklist for you — nothing is sent to us.">i</span> · ${done}/${rail.fields.length}</span>
+        </div>
+        <div class="seg" style="margin-bottom:12px">
+          ${Object.keys(f.rails).map(k=>`<button class="${a.rail===k?'on':''}" onclick="S.add.rail='${k}'; S.add.ticked={}; render()">${e(k)}</button>`).join('')}
+        </div>
+        <p class="fnote" style="margin:0 0 12px">${rail.note}</p>
+        ${rail.fields.map(([k,v,hint])=>`
+          <div class="wrow ${a.ticked[k]?'done':''}">
+            <input type="checkbox" ${a.ticked[k]?'checked':''} onchange="S.add.ticked['${e(k)}']=this.checked; render()" aria-label="Copied ${e(k)}">
+            <div style="min-width:0">
+              <div class="wk">${e(k)}${hint?` <span class="i" title="${e(hint)}">i</span>`:''}</div>
+              <div class="wv num">${e(v)}</div>
+            </div>
+            <button class="btn sm" style="margin-left:auto" onclick="copyField('${e(k)}','${e(v)}')">Copy</button>
+          </div>`).join('')}
+      </div>
+
+      <div class="bankbox">
+        <div class="wk" style="margin-bottom:8px">Bank account</div>
+        <div class="tablewrap"><table><tbody>
+          <tr><td>Account holder</td><td class="r"><b>${e(f.holder)}</b></td></tr>
+          <tr><td>Account</td><td class="r num"><b>${e(f.acct)}</b></td></tr>
+        </tbody></table></div>
+        <p class="hint" style="margin:10px 0 0">This is the bank account you registered during sign-up. To change it, contact support.</p>
+      </div>
+    </div>
+
+    <div>
+      ${howCard('How funding works', f.how)}
+      ${balCard(w, 'Funds available · ' + w.ccy + ' wallet')}
+    </div>
+  </div>`;
+}
+
+/* ---- Withdraw ---- */
+function openWithdraw(ccy){ go({view:'withdraw', wal:ccy, walletOpen:false, wd:{ccy, amt:''}}); }
+function viewWithdraw(){
+  const d = S.wd, w = walOf(d.ccy), f = FUNDING[d.ccy], wd = f.withdraw;
+  const amt = parseFloat(d.amt)||0;
+  const fee = wd.fee||0;
+  const over = amt > w.cash;
+  return `
+  <div class="crumb"><b>Investments</b><span>›</span><span style="cursor:pointer" onclick="openWallet('${d.ccy}')">${e(w.n)}</span><span>›</span><b>Withdraw</b></div>
+  <button class="back" onclick="openWallet('${d.ccy}')">← Back</button>
+  <div class="dhead">
+    <div>
+      <h2 class="page" style="margin-bottom:2px">Withdraw funds</h2>
+      <p class="asat">Available balance · <b class="num" style="color:var(--ink)">${money(w.cash,w.ccy)}</b></p>
+    </div>
+    <span class="pill o" style="margin-left:auto">● ${e(MARKET[d.ccy].label)}</span>
+  </div>
+
+  <div class="addgrid">
+    <div class="card">
+      <div class="bankbox" style="margin:0 0 18px">
+        <div class="wk" style="margin-bottom:6px">Withdrawal account</div>
+        <div style="font-family:Outfit,sans-serif;font-size:15px;font-weight:600;margin-bottom:4px">Where your money goes</div>
+        <p class="hint" style="margin:0 0 10px">${e(wd.who)}</p>
+        <p class="hint" style="margin:0">${e(wd.only)}</p>
+      </div>
+
+      <div class="flabel">Amount (${e(d.ccy)})</div>
+      <div class="amtwrap">
+        <span class="amtpre">${ccyPre(d.ccy).trim()}</span>
+        <input class="bignum num amtin" type="text" inputmode="decimal" id="wdamt" placeholder="0.00" value="${e(d.amt)}" oninput="S.wd.amt=numIn(this.value); render()">
+      </div>
+      <p class="fnote">${e(wd.feeNote)}</p>
+      ${over?`<p class="fnote" style="color:var(--red)">That is more than your available balance of ${money(w.cash,w.ccy)}.</p>`:''}
+
+      <div class="bankbox" style="margin-top:16px">
+        <div class="wk" style="margin-bottom:8px">Bank account</div>
+        <div class="tablewrap"><table><tbody>
+          <tr><td>Account holder</td><td class="r"><b>${e(f.holder||wd.holder)}</b></td></tr>
+          <tr><td>Account</td><td class="r num"><b>${e(f.acct||wd.acct)}</b></td></tr>
+        </tbody></table></div>
+        <p class="hint" style="margin:10px 0 0">${e(wd.acctNote)}</p>
+      </div>
+
+      <div style="margin-top:14px"><span class="pill o" style="padding:8px 14px;font-size:12.5px">${e(wd.rail)}</span></div>
+
+      <div class="btnrow">
+        <button class="btn p" style="width:100%;justify-content:center" ${amt>0&&!over?'':'disabled'} onclick="doWithdraw()">Withdraw</button>
+      </div>
+      <p class="hint" style="text-align:center;margin:10px 0 0">Your balance updates once the withdrawal is processed.</p>
+    </div>
+
+    <div>
+      ${howCard('How withdrawals work', wd.how)}
+      ${balCard(w, 'Funds available · ' + w.ccy + ' wallet')}
+    </div>
+  </div>`;
+}
+function doWithdraw(){
+  const d = S.wd, w = walOf(d.ccy), f = FUNDING[d.ccy], amt = parseFloat(d.amt)||0;
+  w.cash -= amt;
+  TXNS.unshift({d:'2026-09-09', acc:(d.ccy==='ZAR'?'South Africa · wallet':'Global · wallet'), k:'Wallet',
+                t:'Withdrawal · '+f.withdraw.rail.split(' · ')[0].replace('Withdraws via ',''), a:-amt, ccy:d.ccy, s:'Pending'});
+  toast('Withdrawal of ' + money(amt,d.ccy) + ' requested');
+  openWallet(d.ccy);
 }
 
 /* ================= views ================= */
@@ -1532,7 +1932,7 @@ function viewWealth(){
 }
 
 /* ================= render ================= */
-const VIEWS = {mywealth:viewWealth, portfolio:viewPortfolio, item:viewItem, order:viewOrder};
+const VIEWS = {mywealth:viewWealth, portfolio:viewPortfolio, item:viewItem, order:viewOrder, wallet:viewWallet, addmoney:viewAdd, withdraw:viewWithdraw};
 function render(){
   const af = document.activeElement, fid = af && af.id;
   let pos = null; try{ pos = af && af.selectionStart; }catch(_){}

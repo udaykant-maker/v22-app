@@ -29,7 +29,8 @@
   /* prototype aliases */
   --green:var(--teal); --green-dark:var(--teal-600); --green-lt:#33ddb3;
   --green-soft:var(--teal-50); --green-line:var(--teal-100);
-  --navy-2:var(--navy-900);
+  --navy-2:var(--navy-800);
+  --navy-grad:linear-gradient(135deg,#132d46,#0f2236);
   --ink:var(--gray-900); --ink-2:var(--gray-700); --muted:var(--gray-500); --faint:var(--gray-400);
   --bg:var(--gray-100); --card:#FFFFFF; --sunk:var(--gray-50);
   --line:var(--gray-200); --line-2:var(--gray-300);
@@ -52,7 +53,7 @@ h1,h2,h3,h4,.num,.brand,.navlbl,.tab,.pill,.btn{font-family:Inter,system-ui,sans
 .num{font-variant-numeric:tabular-nums}
 
 /* ---------- explainer strip ---------- */
-.explain{background:var(--navy-2); color:#d4e0f0; padding:20px 26px}
+.explain{background:var(--navy-grad); color:#d4e0f0; padding:20px 26px}
 .explain-in{max-width:1320px; margin:0 auto}
 .explain .eyebrow{font-family:Inter,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--teal-bright)}
 .explain h1{font-size:20px; font-weight:600; margin:8px 0 6px; letter-spacing:-.01em; color:#fff}
@@ -117,7 +118,7 @@ h2.page{font-size:29px; font-weight:600; letter-spacing:-.028em; margin:0 0 7px}
 
 /* ---------- hero summary (single, replaces wallet cards) ---------- */
 .hero{border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); margin-bottom:20px; background:var(--card)}
-.hero-top{background:var(--navy-2); padding:20px 24px 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap}
+.hero-top{background:var(--navy-grad); padding:20px 24px 22px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap}
 .hero-top .k{font-family:Inter,sans-serif; font-size:10.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#00d4aa; width:100%; margin-bottom:6px}
 .hero-tot{font-family:Inter,sans-serif; font-size:40px; font-weight:600; letter-spacing:-.03em; line-height:1; color:#fff}
 .hero-tot small{font-size:26px; font-weight:500; letter-spacing:.02em; margin-right:10px; color:#fff}
@@ -225,13 +226,13 @@ td .sub2{font-size:11.5px; color:var(--muted); display:block}
 .doc-bar .sp{flex:1}
 .doc-body{padding:26px 34px 40px}
 @media (max-width:640px){ .doc-body{padding:20px} }
-.doc-head{display:flex; justify-content:space-between; gap:16px; align-items:flex-start; border-bottom:2px solid var(--navy-2); padding-bottom:14px; margin-bottom:18px; flex-wrap:wrap}
+.doc-head{display:flex; justify-content:space-between; gap:16px; align-items:flex-start; border-bottom:2px solid var(--navy); padding-bottom:14px; margin-bottom:18px; flex-wrap:wrap}
 .doc-head .dt{font-family:Inter,sans-serif; font-size:21px; font-weight:600; letter-spacing:-.02em}
 .doc-head .ds{font-size:12px; color:var(--muted)}
 .doc-meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px 20px; background:var(--sunk); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:20px}
 .doc-meta .k{font-family:Inter,sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--faint)}
 .doc-meta .v{font-size:13px; font-weight:600; color:var(--ink); font-family:Inter,sans-serif}
-.snum{display:inline-grid; place-items:center; width:20px; height:20px; border-radius:6px; background:var(--navy-2); color:#00d4aa; font-family:Inter,sans-serif; font-size:11px; font-weight:700; margin-right:9px}
+.snum{display:inline-grid; place-items:center; width:20px; height:20px; border-radius:6px; background:var(--navy); color:#00d4aa; font-family:Inter,sans-serif; font-size:11px; font-weight:700; margin-right:9px}
 .doc h3{font-family:Inter,sans-serif; font-size:14.5px; font-weight:600; margin:26px 0 4px; display:flex; align-items:center}
 .doc h3:first-of-type{margin-top:0}
 .doc .expl{font-size:12px; color:var(--muted); line-height:1.6; margin:10px 0 0}
@@ -240,7 +241,7 @@ td .sub2{font-size:11.5px; color:var(--muted); display:block}
 .final{display:inline-flex; align-items:center; gap:6px; background:var(--green-soft); border:1px solid var(--green-line); color:#158c66; border-radius:8px; padding:6px 11px; font-size:12px; font-weight:600; font-family:Inter,sans-serif}
 
 /* ---------- toast ---------- */
-.toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:var(--navy-2); color:#d4e0f0; padding:12px 18px; border-radius:11px; font-size:13px; box-shadow:0 16px 40px -16px rgba(9,20,35,.7); z-index:80; font-family:Inter,sans-serif; font-weight:500}
+.toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:var(--navy); color:#d4e0f0; padding:12px 18px; border-radius:11px; font-size:13px; box-shadow:0 8px 32px rgba(0,0,0,.16); z-index:80; font-family:Inter,sans-serif; font-weight:500}
 
 footer.pf{max-width:1320px; margin:0 auto; padding:0 22px 40px; font-size:12.5px; color:var(--muted)}
 footer.pf p{margin:0 0 5px}
@@ -325,7 +326,7 @@ footer.pf p{margin:0 0 5px}
 .ranges{display:flex; gap:6px; margin-top:12px; flex-wrap:wrap}
 .rg{font-family:Inter,sans-serif; font-size:12px; font-weight:600; padding:6px 13px; border-radius:999px; border:1px solid var(--line-2); background:var(--card); color:var(--ink-2); cursor:pointer}
 .rg:hover{border-color:var(--green-line)}
-.rg.on{background:var(--navy-2); border-color:var(--navy-2); color:#fff}
+.rg.on{background:var(--navy); border-color:var(--navy); color:#fff}
 
 .alloc{display:flex; gap:28px; align-items:center; flex-wrap:wrap}
 .lg{display:flex; flex-direction:column; gap:10px}
@@ -338,7 +339,7 @@ footer.pf p{margin:0 0 5px}
 .fs .fn{font-family:Inter,sans-serif; font-weight:600; font-size:13.5px; flex:1}
 
 /* account strips (portfolio detail) */
-.astrip{background:var(--navy-2); color:#fff; border-radius:13px 13px 0 0; padding:14px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-family:Inter,sans-serif}
+.astrip{background:var(--navy-grad); color:#fff; border-radius:13px 13px 0 0; padding:14px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-family:Inter,sans-serif}
 .astrip .an{font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase}
 .astrip .av2{margin-left:auto; font-size:20px; font-weight:600; color:#00d4aa; letter-spacing:-.01em}
 .wstrip{background:var(--green-soft); border-left:1px solid var(--green-line); border-right:1px solid var(--green-line); padding:12px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap}

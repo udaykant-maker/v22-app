@@ -258,6 +258,22 @@ footer.pf p{margin:0 0 5px}
 .kv p{margin:0 0 12px; font-size:13.5px; color:var(--ink-2)}
 
 /* funding / withdrawal screens */
+.wdgrid{display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start}
+@media (max-width:900px){ .wdgrid{grid-template-columns:1fr} }
+.wdbal{display:flex; align-items:center; justify-content:space-between; font-size:14px; color:var(--ink-2)}
+.wdbal b{font-family:Inter,sans-serif; font-size:16px; color:var(--ink)}
+.wdnext{width:100%; justify-content:center; margin-top:16px; padding:14px; font-size:15px}
+.linkbtn{border:0; background:none; padding:8px 0 0; color:var(--green-dark); font-family:Inter,sans-serif; font-weight:600; font-size:13.5px; cursor:pointer}
+.linkbtn:hover{text-decoration:underline}
+.radiorow{display:flex; gap:12px; align-items:center; border:1px solid var(--line-2); border-radius:12px; padding:13px 15px; margin-bottom:10px; cursor:pointer; font-size:14px}
+.radiorow.on{border-color:var(--teal); background:var(--teal-50)}
+.radiorow input{width:18px; height:18px; accent-color:var(--teal); flex:none; margin:0}
+.newbank{display:grid; gap:12px; border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--sunk)}
+.newbank .fgroup select,.newbank .fgroup input{width:100%}
+.iconbtn{border:1px solid var(--line-2); background:var(--card); border-radius:9px; width:30px; height:30px; cursor:pointer; color:var(--muted); font-size:13px}
+.iconbtn:hover{background:var(--sunk)}
+.btn.navy{background:var(--navy); border-color:var(--navy); color:#fff}
+.btn.navy:hover{background:#0f2236}
 .addgrid{display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:16px; align-items:start}
 @media (max-width:1040px){ .addgrid{grid-template-columns:1fr} }
 .addgrid > div > .card + .card{margin-top:14px}
@@ -1567,6 +1583,12 @@ const FUNDING = {
   ZAR:{ mode:'pay', cta:'Add money', method:'Ozow', min:100, chips:[100,500,1000,2000],
         blurb:'Top up your South Africa wallet with Ozow.',
         settle:'as soon as Ozow confirms the payment',
+        withdraw:{
+          mode:'form', fee:0, eta:'11 Sept 2026',
+          accounts:[{id:'investec', bank:'Investec Bank', mask:'····6852', type:'Savings'}],
+          rule:'Withdrawals can only be made to your personal bank account (registered against your ID number), no third-party bank accounts can be used.',
+          note:'Funds are sent to your registered bank account. Processing times depend on your bank.'
+        },
         done:'Your top-up was successful. Your South Africa wallet balance updates as soon as Ozow confirms the payment.',
         status:'Settled' },
   /* Global: we do not pull the money — we hand you the broker's wire details and
@@ -1581,7 +1603,7 @@ const FUNDING = {
         ],
         holder:'Udaykant Tiwari', acct:'···· 8001',
         withdraw:{
-          rail:'Withdraws via SWIFT wire · $35 fee', fee:35,
+          mode:'wire', rail:'Withdraws via SWIFT wire · $35 fee', fee:35,
           who:'Enter the bank account to withdraw to — it must be in your legal name.',
           only:'Only one withdrawal account is allowed at a time — the same one you funded your wallet from. Changing it replaces the current one and may require re-verification.',
           feeNote:'SWIFT withdrawals incur a $35 fee. Local-rails withdrawals are free.',
@@ -1674,7 +1696,7 @@ function viewWallet(){
         <td><b>${e(t.t)}</b></td>
         <td class="num">${dfmt(t.d)}</td>
         <td class="r num ${t.a<0?'down':'up'}">${t.a<0?'-':'+'}${money(t.a,t.ccy)}</td>
-        <td class="r"><span class="pill ${t.s==='Pending'?'a':'gs'}">${e(t.s)}</span></td>
+        <td class="r"><span class="pill ${t.s==='Pending'?'a':'gs'}">${e(t.s)}</span>${t.eta?`<span class="sub2">expected ${e(t.eta)}</span>`:''}</td>
       </tr>`).join('')}</tbody>
     </table></div>`:`<div class="empty">No wallet activity yet.</div>`}
   </div>`;
@@ -1846,9 +1868,125 @@ function viewWire(){
 }
 
 /* ---- Withdraw ---- */
-function openWithdraw(ccy){ go({view:'withdraw', wal:ccy, walletOpen:false, wd:{ccy, amt:''}}); }
+function openWithdraw(ccy){
+  const w = FUNDING[ccy].withdraw;
+  go({view:'withdraw', wal:ccy, walletOpen:false,
+      wd:{ccy, amt:'', step:'form', acct:(w.accounts||[{}])[0].id || 'new', nb:{bank:'', num:'', type:'Savings'}}});
+}
+const SA_BANKS = ['Investec Bank','Standard Bank','FNB','Absa','Nedbank','Capitec','Discovery Bank','TymeBank'];
+function wdAccount(){
+  const d = S.wd, wd = FUNDING[d.ccy].withdraw;
+  if(d.acct === 'new') return {bank:d.nb.bank || 'New bank account', mask:d.nb.num ? '····'+d.nb.num.slice(-4) : '', type:d.nb.type};
+  return (wd.accounts||[]).find(a=>a.id===d.acct) || {};
+}
+function viewWithdrawForm(){
+  const d = S.wd, w = walOf(d.ccy), wd = FUNDING[d.ccy].withdraw;
+  const amt = parseFloat(d.amt)||0;
+  const over = amt > w.cash;
+  const newOk = d.nb.bank && d.nb.num.length >= 6;
+  const ready = amt > 0 && !over && (d.acct !== 'new' || newOk);
+  return `
+  <div class="crumb"><b>Investments</b><span>›</span><span style="cursor:pointer" onclick="openWallet('${d.ccy}')">${e(w.n)}</span><span>›</span><b>Withdraw</b></div>
+  <button class="back" onclick="openWallet('${d.ccy}')">← Back</button>
+
+  <div class="wdgrid">
+    <div class="card">
+      <h3 style="font-size:20px; font-weight:600; margin:0">Withdraw</h3>
+      <p class="hint" style="margin:2px 0 16px">from your ${e(w.n)}</p>
+      <div class="wdbal"><span>Available balance</span><b class="num">${money(w.cash,w.ccy)}</b></div>
+      <div class="flabel" style="margin-top:16px">Amount</div>
+      <div class="amtwrap">
+        <span class="amtpre">${ccyPre(d.ccy).trim()}</span>
+        <input class="bignum num amtin" type="text" inputmode="decimal" id="wdamt" placeholder="0.00" value="${e(d.amt)}" oninput="S.wd.amt=numIn(this.value); render()">
+      </div>
+      <button class="linkbtn" onclick="S.wd.amt='${w.cash.toFixed(2)}'; render()">Withdraw all</button>
+      ${over?`<p class="fnote" style="color:var(--red)">That is more than your available balance.</p>`:''}
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:20px; font-weight:600; margin:0">Bank account details</h3>
+      <p class="hint" style="margin:2px 0 16px">for withdrawals</p>
+      <div class="wk" style="margin-bottom:9px">Your accounts</div>
+      ${(wd.accounts||[]).map(a=>`
+        <label class="radiorow ${d.acct===a.id?'on':''}">
+          <input type="radio" name="wdacct" ${d.acct===a.id?'checked':''} onchange="S.wd.acct='${a.id}'; render()">
+          <span><b>${e(a.bank)}</b> ${e(a.mask)} · ${e(a.type)}</span>
+        </label>`).join('')}
+      <label class="radiorow ${d.acct==='new'?'on':''}" style="align-items:flex-start">
+        <input type="radio" name="wdacct" ${d.acct==='new'?'checked':''} onchange="S.wd.acct='new'; render()">
+        <span>
+          <b>Add bank account details</b>
+          <span class="hint" style="display:block; margin:4px 0 0">${e(wd.rule)}</span>
+        </span>
+      </label>
+      ${d.acct==='new'?`<div class="newbank">
+        <div class="fgroup"><label><span>Bank</span>
+          <select onchange="S.wd.nb.bank=this.value; render()">
+            <option value="">Choose a bank</option>
+            ${SA_BANKS.map(b=>`<option ${d.nb.bank===b?'selected':''}>${b}</option>`).join('')}
+          </select></label></div>
+        <div class="fgroup"><label><span>Account number</span>
+          <input type="text" inputmode="numeric" id="nbnum" value="${e(d.nb.num)}" oninput="S.wd.nb.num=numIn(this.value); render()"></label></div>
+        <div class="fgroup"><label><span>Account type</span>
+          <select onchange="S.wd.nb.type=this.value; render()">
+            ${['Savings','Cheque / Current','Transmission'].map(t=>`<option ${d.nb.type===t?'selected':''}>${t}</option>`).join('')}
+          </select></label></div>
+      </div>`:''}
+    </div>
+  </div>
+
+  <button class="btn p wdnext" ${ready?'':'disabled'} onclick="S.wd.step='order'; render()">Next</button>`;
+}
+
+/* Withdrawal order + confirmation, both modals */
+function wdDoc(){
+  if(S.view!=='withdraw' || !S.wd || S.wd.step==='form') return '';
+  const d = S.wd, w = walOf(d.ccy), wd = FUNDING[d.ccy].withdraw, a = wdAccount();
+  const amt = parseFloat(d.amt)||0, fee = wd.fee||0;
+  if(d.step==='order') return `
+  <div class="ovl" onclick="if(event.target===this){S.wd.step='form'; render()}">
+    <div class="doc" style="width:min(520px,100%)" role="dialog" aria-label="Withdrawal order">
+      <div class="doc-bar"><span class="t">Withdrawal order</span><div class="sp"></div>
+        <button class="iconbtn" onclick="S.wd.step='form'; render()" aria-label="Close">✕</button></div>
+      <div class="doc-body" style="padding:20px 22px 24px">
+        <div class="bankbox" style="margin:0 0 14px">
+          <div style="font-family:Inter,sans-serif;font-size:15px;font-weight:600">${e(w.n)} → ${e(a.bank)}</div>
+          <div class="hint" style="margin:2px 0 0">Paid to your bank account</div>
+        </div>
+        <div class="cost" style="padding:4px 16px"><table><tbody>
+          <tr><td>From</td><td class="r"><b>${e(w.n)}</b></td></tr>
+          <tr><td>To</td><td class="r"><b>${e(a.bank)} ${e(a.mask)}</b></td></tr>
+          <tr><td>Account type</td><td class="r"><b>${e(a.type)}</b></td></tr>
+          <tr><td>Withdrawal amount</td><td class="r num"><b>${money(amt,d.ccy)}</b></td></tr>
+          <tr><td>Transaction fee (incl VAT)</td><td class="r num"><b>${money(fee,d.ccy)}</b></td></tr>
+          <tr><td>You'll receive</td><td class="r num"><b>${money(amt-fee,d.ccy)}</b></td></tr>
+        </tbody></table></div>
+        <p class="hint" style="margin:12px 0 0">${e(wd.note)}</p>
+        <div class="btnrow">
+          <button class="btn" onclick="S.wd.step='form'; render()">Back</button>
+          <button class="btn navy" style="flex:1;justify-content:center" onclick="doWithdraw()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  return `
+  <div class="ovl">
+    <div class="doc" style="width:min(480px,100%)" role="dialog" aria-label="Withdrawal requested">
+      <div class="doc-bar"><span class="t">Withdrawal requested</span><div class="sp"></div>
+        <button class="iconbtn" onclick="openWallet('${d.ccy}')" aria-label="Close">✕</button></div>
+      <div class="doc-body donewrap" style="padding:26px 24px 28px">
+        <div class="donemark">✓</div>
+        <h3 style="font-size:19px; font-weight:600; margin:0 0 12px">Withdrawal request submitted successfully</h3>
+        <div style="font-family:Inter,sans-serif; font-weight:600; font-size:14px; margin-bottom:4px">What's next?</div>
+        <p class="hint" style="max-width:40ch; margin:0 auto 18px">You'll be notified when your ${money(amt,d.ccy)} has been successfully sent to ${e(a.bank)} ${e(a.mask)}.</p>
+        <button class="btn p" style="width:100%;justify-content:center" onclick="openWallet('${d.ccy}')">Done</button>
+      </div>
+    </div>
+  </div>`;
+}
 function viewWithdraw(){
   const d = S.wd, w = walOf(d.ccy), f = FUNDING[d.ccy], wd = f.withdraw;
+  if(wd.mode === 'form') return viewWithdrawForm();
   const amt = parseFloat(d.amt)||0;
   const fee = wd.fee||0;
   const over = amt > w.cash;
@@ -1904,12 +2042,13 @@ function viewWithdraw(){
   </div>`;
 }
 function doWithdraw(){
-  const d = S.wd, w = walOf(d.ccy), f = FUNDING[d.ccy], amt = parseFloat(d.amt)||0;
+  const d = S.wd, w = walOf(d.ccy), wd = FUNDING[d.ccy].withdraw, amt = parseFloat(d.amt)||0;
+  const via = wd.mode==='form' ? wdAccount().bank : 'SWIFT wire';
   w.cash -= amt;
   TXNS.unshift({d:'2026-09-09', acc:(d.ccy==='ZAR'?'South Africa · wallet':'Global · wallet'), k:'Wallet',
-                t:'Withdrawal · '+f.withdraw.rail.split(' · ')[0].replace('Withdraws via ',''), a:-amt, ccy:d.ccy, s:'Pending'});
-  toast('Withdrawal of ' + money(amt,d.ccy) + ' requested');
-  openWallet(d.ccy);
+                t:'Withdrawal · '+via, a:-amt, ccy:d.ccy, s:'Pending', eta:wd.eta});
+  if(wd.mode==='form'){ S.wd.step='done'; render(); }
+  else { toast('Withdrawal of ' + money(amt,d.ccy) + ' requested'); openWallet(d.ccy); }
 }
 
 /* ================= views ================= */
@@ -1960,10 +2099,11 @@ function render(){
   let pos = null; try{ pos = af && af.selectionStart; }catch(_){}
   renderSide();
   document.getElementById('main').innerHTML = (VIEWS[S.view] || viewInvest)();
-  document.getElementById('modal').innerHTML = stmtDoc() + walletDoc();
-  document.body.style.overflow = (S.stmt.open || S.walletOpen) ? 'hidden' : '';
+  const overlay = stmtDoc() + walletDoc() + wdDoc();
+  document.getElementById('modal').innerHTML = overlay;
+  document.body.style.overflow = overlay ? 'hidden' : '';
   if(fid){ const n = document.getElementById(fid); if(n){ n.focus(); if(pos!=null) try{ n.setSelectionRange(pos,pos); }catch(_){} } }
 }
-document.addEventListener('keydown', ev => { if(ev.key!=='Escape') return; if(S.stmt.open) closeStmt(); else if(S.walletOpen) go({walletOpen:false}); });
+document.addEventListener('keydown', ev => { if(ev.key!=='Escape') return; if(S.stmt.open) closeStmt(); else if(S.walletOpen) go({walletOpen:false}); else if(S.wd && S.wd.step==='order'){ S.wd.step='form'; render(); } });
 render();
 </script>

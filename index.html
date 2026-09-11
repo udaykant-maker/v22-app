@@ -263,8 +263,9 @@ tr.pfrow td{background:var(--gray-100)}
 tr.pfrow:hover td{background:var(--gray-200)}
 tbody tr[onclick]{cursor:pointer}
 tbody tr[onclick]:hover td{background:var(--sunk)}
-.col-pill{width:96px} .col-mkt{width:112px} .col-qty{width:112px}
-.col-val{width:160px} .col-pl{width:132px} .col-chev{width:26px}
+.col-pill{width:96px} .col-ccy{width:74px} .col-qty{width:118px}
+.col-val{width:180px} .col-pl{width:150px} .col-chev{width:26px}
+.namerow{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
 td.chev{color:var(--faint); font-size:18px}
 /* explore: one investment per row (Stephen, 11 Sep) */
 .exhead{display:grid; grid-template-columns:minmax(240px,2.4fr) 110px 128px 132px 150px 84px 28px; gap:14px; align-items:center;
@@ -719,6 +720,7 @@ const go = (o={}) => { Object.assign(S,o); render(); };
 const setF = (grp,k,v) => { S[grp][k]=v; render(); };
 const RISK_CLS = {Conservative:'risk-c', Balanced:'risk-b', Growth:'risk-g', Aggressive:'risk-a'};
 const mktPill = (region,ccy) => `<span class="pill o">${region==='US'?'🇺🇸 US':'🇿🇦 SA'} · ${e(ccy)}</span>`;
+const countryPill = region => `<span class="pill o">${region==='US'?'🇺🇸 United States':'🇿🇦 South Africa'}</span>`;
 const valCell = (v,ccy) => ccy==='ZAR'
   ? `<b>${money(v,'ZAR')}</b>`
   : `<b>${money0(zar(v,ccy),'ZAR')}</b><span class="sub2">${money(v,ccy)}</span>`;
@@ -846,13 +848,14 @@ function tabMine(){
     <p class="hint">Managed baskets we advise on. You instruct the portfolio, not the funds inside it.</p>
     ${pf.length?`<div class="tablewrap"><table>
       <thead><tr>
-        <th>Portfolio</th><th class="col-pill">Risk</th><th class="col-mkt">Market</th>
+        <th>Portfolio</th><th class="col-pill">Risk</th><th class="col-ccy">Currency</th>
         <th class="r col-val">Value</th><th class="r col-pl">Profit</th><th class="r col-chev"></th>
       </tr></thead>
       <tbody>${pf.map(p=>`<tr class="pfrow" onclick="go({view:'portfolio',pf:'${p.id}',pfRange:'1Y'})">
-        <td><b>${e(p.name)}</b><span class="sub2">${e(p.acct)} · goal: ${e(p.goal)} · ${e(p.sub)}</span></td>
+        <td><span class="namerow"><b>${e(p.name)}</b>${countryPill(p.region)}</span>
+            ${p.goal?`<span class="sub2">Goal · ${e(p.goal)}</span>`:''}</td>
         <td class="col-pill">${riskPill(p.risk)}</td>
-        <td class="col-mkt">${mktPill(p.region,p.ccy)}</td>
+        <td class="col-ccy num">${e(p.ccy)}</td>
         <td class="r num col-val">${valCell(p.val,p.ccy)}</td>
         <td class="r num col-pl">${plCell(p.ret,p.pnl,p.ccy)}</td>
         <td class="r chev col-chev">›</td>
@@ -865,15 +868,16 @@ function tabMine(){
     <p class="hint">Securities you bought yourself, execution-only — we arranged the trade but did not advise on it.</p>
     ${dh.length?`<div class="tablewrap"><table>
       <thead><tr>
-        <th>Holding</th><th class="col-pill">Type</th><th class="col-pill">Risk</th><th class="col-mkt">Market</th>
+        <th>Holding</th><th class="col-pill">Type</th><th class="col-pill">Risk</th><th class="col-ccy">Currency</th>
         <th class="r col-qty">Price</th>
         <th class="r col-val">Value</th><th class="r col-pl">Profit</th><th class="r col-chev"></th>
       </tr></thead>
       <tbody>${dh.map(d=>`<tr onclick="openItem('${e(d.s)}')">
-        <td><b>${e(d.s)}</b><span class="sub2">${e(d.n)} · ${e(d.qty)} units · avg ${money(d.avg,d.ccy)}</span></td>
+        <td><span class="namerow"><b>${e(d.s)}</b>${countryPill(d.region)}</span>
+            <span class="sub2">${e(d.n)}</span></td>
         <td class="col-pill"><span class="pill o">${e(d.type)}</span></td>
         <td class="col-pill">${riskOf(d.s)?riskPill(riskOf(d.s)):'—'}</td>
-        <td class="col-mkt">${mktPill(d.region,d.ccy)}</td>
+        <td class="col-ccy num">${e(d.ccy)}</td>
         <td class="r num col-qty">${money(d.px,d.ccy)}</td>
         <td class="r num col-val">${valCell(d.val,d.ccy)}</td>
         <td class="r num col-pl">${plCell(d.pc,d.pnl,d.ccy)}</td>

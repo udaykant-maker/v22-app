@@ -258,6 +258,14 @@ footer.pf p{margin:0 0 5px}
 .kv p{margin:0 0 12px; font-size:13.5px; color:var(--ink-2)}
 
 /* funding / withdrawal screens */
+/* My investments: portfolios on grey, and one spine across both tables */
+tr.pfrow td{background:var(--gray-100)}
+tr.pfrow:hover td{background:var(--gray-200)}
+tbody tr[onclick]{cursor:pointer}
+tbody tr[onclick]:hover td{background:var(--sunk)}
+.col-pill{width:96px} .col-mkt{width:112px} .col-qty{width:112px}
+.col-val{width:160px} .col-pl{width:132px} .col-chev{width:26px}
+td.chev{color:var(--faint); font-size:18px}
 /* explore: one investment per row (Stephen, 11 Sep) */
 .exhead{display:grid; grid-template-columns:minmax(240px,2.4fr) 110px 128px 132px 150px 84px 28px; gap:14px; align-items:center;
   padding:0 16px 9px; font-family:Inter,sans-serif; font-size:10px; font-weight:600; letter-spacing:.09em;
@@ -710,6 +718,14 @@ const zarFmt = v => money0(v,'ZAR');
 const go = (o={}) => { Object.assign(S,o); render(); };
 const setF = (grp,k,v) => { S[grp][k]=v; render(); };
 const RISK_CLS = {Conservative:'risk-c', Balanced:'risk-b', Growth:'risk-g', Aggressive:'risk-a'};
+const mktPill = (region,ccy) => `<span class="pill o">${region==='US'?'🇺🇸 US':'🇿🇦 SA'} · ${e(ccy)}</span>`;
+const valCell = (v,ccy) => ccy==='ZAR'
+  ? `<b>${money(v,'ZAR')}</b>`
+  : `<b>${money0(zar(v,ccy),'ZAR')}</b><span class="sub2">${money(v,ccy)}</span>`;
+const plCell = (pc,pnl,ccy) => {
+  const d = pnl<0?'down':'up';
+  return `<span class="${d}">${e(pc)}</span><span class="sub2 ${d}">${pnl<0?'-':'+'}${money0(Math.abs(zar(pnl,ccy)),'ZAR')}</span>`;
+};
 const riskPill = r => `<span class="pill ${RISK_CLS[r]||'risk-b'}">${e(r)}</span>`;
 const toast = m => {
   const t=document.getElementById('toast');
@@ -812,6 +828,7 @@ function tabMine(){
   const dh = DIRECT.filter(d => (!f.region||d.region===f.region) && (!f.type||d.type===f.type) && hit(f.q,d.s,d.n));
   const pfVal = pf.reduce((a,p)=>a+zar(p.val,p.ccy),0), dhVal = dh.reduce((a,d)=>a+zar(d.val,d.ccy),0);
   const on = f.region||f.type||f.q;
+  const riskOf = sym => (EXPLORE.find(x=>x.s===sym)||{}).risk;
 
   return `
   <div class="filters">
@@ -822,20 +839,23 @@ function tabMine(){
     </label></div>
     ${on?`<button class="btn sm fclear" onclick="go({mine:{region:'',type:'',q:''}})">Clear</button>`:''}
   </div>
-  <p class="count">Showing <b>${pf.length+dh.length}</b> of ${PORTFOLIOS.length+DIRECT.length} · <b>${zarFmt(pfVal+dhVal)}</b> of ${zarFmt(totals().inv)}</p>
+  ${on?`<p class="count">Showing <b>${pf.length+dh.length}</b> of ${PORTFOLIOS.length+DIRECT.length} · <b>${zarFmt(pfVal+dhVal)}</b> of ${zarFmt(totals().inv)}</p>`:''}
 
   <div class="card">
     <div class="sec-t">Portfolios <span class="pill o">${pf.length}</span><span style="font-family:Inter;font-weight:400;font-size:12.5px;color:var(--muted)">${zarFmt(pfVal)}</span></div>
     <p class="hint">Managed baskets we advise on. You instruct the portfolio, not the funds inside it.</p>
     ${pf.length?`<div class="tablewrap"><table>
-      <thead><tr><th>Portfolio</th><th>Region</th><th>Risk</th><th class="r">Value</th><th class="r">Profit</th><th class="r"></th></tr></thead>
-      <tbody>${pf.map(p=>`<tr>
+      <thead><tr>
+        <th>Portfolio</th><th class="col-pill">Risk</th><th class="col-mkt">Market</th>
+        <th class="r col-val">Value</th><th class="r col-pl">Profit</th><th class="r col-chev"></th>
+      </tr></thead>
+      <tbody>${pf.map(p=>`<tr class="pfrow" onclick="go({view:'portfolio',pf:'${p.id}',pfRange:'1Y'})">
         <td><b>${e(p.name)}</b><span class="sub2">${e(p.acct)} · goal: ${e(p.goal)} · ${e(p.sub)}</span></td>
-        <td>${e(p.region)}<span class="sub2">${e(p.ccy)}</span></td>
-        <td>${riskPill(p.risk)}</td>
-        <td class="r num"><b>${money(p.val,p.ccy)}</b><span class="sub2">${zarFmt(zar(p.val,p.ccy))}</span></td>
-        <td class="r num up">${e(p.ret)}<span class="sub2 up">${signed(p.pnl,p.ccy)}</span></td>
-        <td class="r"><button class="btn sm" onclick="go({view:'portfolio',pf:'${p.id}',pfRange:'1Y'})">Open</button></td>
+        <td class="col-pill">${riskPill(p.risk)}</td>
+        <td class="col-mkt">${mktPill(p.region,p.ccy)}</td>
+        <td class="r num col-val">${valCell(p.val,p.ccy)}</td>
+        <td class="r num col-pl">${plCell(p.ret,p.pnl,p.ccy)}</td>
+        <td class="r chev col-chev">›</td>
       </tr>`).join('')}</tbody></table></div>`
     :`<div class="empty">No portfolios match these filters.</div>`}
   </div>
@@ -844,22 +864,23 @@ function tabMine(){
     <div class="sec-t">Direct holdings <span class="pill o">${dh.length}</span><span style="font-family:Inter;font-weight:400;font-size:12.5px;color:var(--muted)">${zarFmt(dhVal)}</span></div>
     <p class="hint">Securities you bought yourself, execution-only — we arranged the trade but did not advise on it.</p>
     ${dh.length?`<div class="tablewrap"><table>
-      <thead><tr><th>Holding</th><th>Type</th><th>Region</th><th class="r">Units</th><th class="r">Avg cost</th><th class="r">Price</th><th class="r">Value</th><th class="r">Profit</th><th class="r"></th></tr></thead>
-      <tbody>${dh.map(d=>`<tr style="cursor:pointer" onclick="openItem('${e(d.s)}')">
-        <td><b>${e(d.s)}</b><span class="sub2">${e(d.n)}</span></td>
-        <td><span class="pill o">${e(d.type)}</span></td>
-        <td>${e(d.region)}<span class="sub2">${e(d.ccy)}</span></td>
-        <td class="r num">${e(d.qty)}</td>
-        <td class="r num">${money(d.avg,d.ccy)}</td>
-        <td class="r num">${money(d.px,d.ccy)}</td>
-        <td class="r num"><b>${money(d.val,d.ccy)}</b><span class="sub2">${zarFmt(zar(d.val,d.ccy))}</span></td>
-        <td class="r num ${d.pnl<0?'down':'up'}">${e(d.pc)}<span class="sub2 ${d.pnl<0?'down':'up'}">${signed(d.pnl,d.ccy)}</span></td>
-        <td class="r"><button class="btn sm" onclick="event.stopPropagation(); openItem('${e(d.s)}')">Open</button></td>
+      <thead><tr>
+        <th>Holding</th><th class="col-pill">Type</th><th class="col-pill">Risk</th><th class="col-mkt">Market</th>
+        <th class="r col-qty">Price</th>
+        <th class="r col-val">Value</th><th class="r col-pl">Profit</th><th class="r col-chev"></th>
+      </tr></thead>
+      <tbody>${dh.map(d=>`<tr onclick="openItem('${e(d.s)}')">
+        <td><b>${e(d.s)}</b><span class="sub2">${e(d.n)} · ${e(d.qty)} units · avg ${money(d.avg,d.ccy)}</span></td>
+        <td class="col-pill"><span class="pill o">${e(d.type)}</span></td>
+        <td class="col-pill">${riskOf(d.s)?riskPill(riskOf(d.s)):'—'}</td>
+        <td class="col-mkt">${mktPill(d.region,d.ccy)}</td>
+        <td class="r num col-qty">${money(d.px,d.ccy)}</td>
+        <td class="r num col-val">${valCell(d.val,d.ccy)}</td>
+        <td class="r num col-pl">${plCell(d.pc,d.pnl,d.ccy)}</td>
+        <td class="r chev col-chev">›</td>
       </tr>`).join('')}</tbody></table></div>`
     :`<div class="empty">No direct holdings match these filters.</div>`}
-  </div>
-
-  `;
+  </div>`;
 }
 
 /* ================= tab: explore investments ================= */

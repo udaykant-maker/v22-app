@@ -188,7 +188,7 @@ select:focus,input:focus{outline:none; border-color:var(--teal); box-shadow:0 0 
 .tick:hover{border-color:var(--green-line)}
 .tick .th{display:flex; align-items:center; gap:9px; margin-bottom:11px}
 .sym{width:34px; height:34px; border-radius:999px; background:var(--sunk); display:grid; place-items:center; font-family:Inter,sans-serif; font-size:10.5px; font-weight:700; color:var(--ink-2); flex:none}
-.sym.pf{background:var(--teal-50); color:var(--teal); border-radius:10px; padding:7px}
+.sym.pf{background:var(--teal); color:#fff; border-radius:10px; padding:8px}
 .sym.pf svg{width:100%; height:100%; display:block}
 .tk{font-family:Inter,sans-serif; font-size:14px; font-weight:600; line-height:1.2}
 .tn{font-size:11.5px; color:var(--muted); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
@@ -338,6 +338,10 @@ td.chev{color:var(--faint); font-size:18px}
 .radiorow input{width:18px; height:18px; accent-color:var(--teal); flex:none; margin:0}
 .newbank{display:grid; gap:12px; border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--sunk)}
 .newbank .fgroup select,.newbank .fgroup input{width:100%}
+.actbtn{width:34px; height:34px; border:1px solid var(--line-2); background:var(--card); border-radius:9px; color:var(--ink-2); cursor:pointer; padding:7px; margin-left:6px; vertical-align:middle}
+.actbtn:first-child{margin-left:0}
+.actbtn:hover{border-color:var(--teal); color:var(--teal-700); background:var(--teal-50)}
+.actbtn svg{width:100%; height:100%; display:block}
 .iconbtn{border:1px solid var(--line-2); background:var(--card); border-radius:9px; width:30px; height:30px; cursor:pointer; color:var(--muted); font-size:13px}
 .iconbtn:hover{background:var(--sunk)}
 .btn.navy{background:var(--navy); border-color:var(--navy); color:#fff}
@@ -722,6 +726,11 @@ const go = (o={}) => { Object.assign(S,o); render(); };
 const setF = (grp,k,v) => { S[grp][k]=v; render(); };
 const RISK_CLS = {Conservative:'risk-c', Balanced:'risk-b', Growth:'risk-g', Aggressive:'risk-a'};
 const mktPill = (region,ccy) => `<span class="pill o">${region==='US'?'🇺🇸 US':'🇿🇦 SA'} · ${e(ccy)}</span>`;
+const ICN = {
+  view:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4 19.5h16"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>'
+};
 const V22LOGO = `<svg viewBox="0 0 309 277" aria-hidden="true"><path d="M91.0264 200.671C89.5637 198.674 89.4272 196.036 90.6632 193.651L152.622 74.0624C154.192 71.0333 157.657 68.9995 161.248 68.9995L193.41 68.9995C199.199 68.9995 202.581 74.0932 200.03 78.9684L124.307 223.677C121.362 229.305 112.88 230.51 109.425 225.792L91.0264 200.671Z" fill="currentColor"/><path d="M296.195 33.0615C301.984 33.0615 305.366 38.1551 302.815 43.0303L183.019 271.967C181.441 274.981 177.986 277 174.407 277H133.843C130.264 277 126.809 274.98 125.231 271.966L34.1826 97.9688C31.6315 93.0935 35.0143 88 40.8027 88H72.9648C76.5562 88 80.0214 90.0334 81.5908 93.0625L154.125 233.062L255.123 38.125C256.692 35.0959 260.158 33.0615 263.749 33.0615H296.195Z" fill="currentColor"/></svg>`;
 const countryPill = region => `<span class="pill o">${region==='US'?'🇺🇸 United States':'🇿🇦 South Africa'}</span>`;
 const valCell = (v,ccy) => ccy==='ZAR'
@@ -1038,9 +1047,9 @@ function tabStmts(){
         <td class="num">${dfmt(s.from)} – ${dfmt(s.to)}</td>
         <td><span class="pill ${s.kind==='Tax'?'a':s.kind==='Detailed'?'b':'gs'}">${e(s.kind)}</span></td>
         <td class="r" style="white-space:nowrap">
-          <button class="btn sm" onclick="openStmt('${s.id}')">View</button>
-          <button class="btn sm" onclick="toast('Downloading ${e(s.t)} · ${e(s.label)} (PDF)')">Download</button>
-          <button class="btn sm" onclick="toast('Emailed to udaykant@vault22.com')">Email</button>
+          <button class="actbtn" title="View" aria-label="View statement" onclick="openStmt('${s.id}')">${ICN.view}</button>
+          <button class="actbtn" title="Download PDF" aria-label="Download statement" onclick="toast('Downloading ${e(s.t)} · ${e(s.label)} (PDF)')">${ICN.down}</button>
+          <button class="actbtn" title="Email to me" aria-label="Email statement" onclick="toast('Emailed to udaykant@vault22.com')">${ICN.mail}</button>
         </td>
       </tr>`).join('')}</tbody>
     </table></div>`:`<div class="empty">No statements in this period. Widen the dates, or generate one for a custom range.</div>`}

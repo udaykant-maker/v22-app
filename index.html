@@ -656,7 +656,6 @@ const TXNS = [
   {d:'2026-08-28', acc:'South Africa · managed', k:'Buy',    t:'SA Momentum · portfolio instruction', a:20000,  ccy:'ZAR', s:'Filled'},
   {d:'2026-08-21', acc:'Global · execution-only',k:'Buy',    t:'VOO · 2.5 shares @ $512.40',          a:1281,   ccy:'USD', s:'Filled'},
   {d:'2026-08-14', acc:'South Africa · wallet',  k:'Wallet', t:'Deposit · Ozow',                      a:25000,  ccy:'ZAR', s:'Settled'},
-  {d:'2026-07-31', acc:'South Africa · wallet',  k:'Fee',    t:'Subscription · Premium',              a:-150,   ccy:'ZAR', s:'Charged'},
   {d:'2026-07-24', acc:'Global · managed',       k:'Income', t:'Global Core · distributions paid to wallet', a:262.13, ccy:'USD', s:'Paid'},
   {d:'2026-07-18', acc:'South Africa · execution-only', k:'Buy', t:'GRT · 900 shares @ R13.10',       a:11790,  ccy:'ZAR', s:'Filled'},
   {d:'2026-06-30', acc:'South Africa · managed', k:'Income', t:'SA Momentum · distributions paid to wallet', a:2675.15, ccy:'ZAR', s:'Paid'},
@@ -958,21 +957,20 @@ function tabTxns(){
   </div>
 
   <div class="card">
-    <div class="sec-t">What you paid <span class="pill o">${zarFmt(sumZar(FEES,'tot') + sumZar(TRADES,'brok'))} in total</span></div>
+    <div class="sec-t">What you paid <span class="pill o">${zarFmt(FEES.reduce((a,f)=>a+zar((f.advice+f.custody)*1.15,f.ccy),0) + sumZar(TRADES,'brok'))} in total</span></div>
     <p class="hint">Everything you have been charged — fees billed to your wallet, and brokerage charged inside your orders.</p>
     <div class="tablewrap"><table>
-      <thead><tr><th>Billed to</th><th class="r">Advice fee</th><th class="r">Custody fee</th><th class="r">Subscription</th><th class="r">VAT at 15%</th><th class="r">Total</th></tr></thead>
-      <tbody>${FEES.map(f=>`<tr>
+      <thead><tr><th>Billed to</th><th class="r">Advice fee</th><th class="r">Custody fee</th><th class="r">VAT at 15%</th><th class="r">Total</th></tr></thead>
+      <tbody>${FEES.map(f=>{const base=f.advice+f.custody, vat=base*0.15; return `<tr>
         <td><b>${e(f.acc)}</b></td>
         <td class="r num">${money(f.advice,f.ccy)}</td>
         <td class="r num">${money(f.custody,f.ccy)}</td>
-        <td class="r num">${money(f.sub,f.ccy)}</td>
-        <td class="r num">${money(f.vat,f.ccy)}</td>
-        <td class="r num"><b>${money(f.tot,f.ccy)}</b></td>
-      </tr>`).join('')}</tbody>
+        <td class="r num">${money(vat,f.ccy)}</td>
+        <td class="r num"><b>${money(base+vat,f.ccy)}</b></td>
+      </tr>`}).join('')}</tbody>
     </table></div>
     <div class="tablewrap" style="margin-top:14px"><table>
-      <thead><tr><th>Charged inside your orders</th><th class="r">Instructions</th><th class="r">Market orders</th><th class="r">Invested</th><th class="r">Withdrawn</th><th class="r">Brokerage incl. VAT</th></tr></thead>
+      <thead><tr><th>Charged inside your orders</th><th class="r">Instructions</th><th class="r">Market orders</th><th class="r">Invested</th><th class="r">Withdrawn</th><th class="r">Brokerage fees</th></tr></thead>
       <tbody>${TRADES.map(t=>`<tr>
         <td><b>${e(t.acc)}</b></td>
         <td class="r num">${t.instr}</td>
@@ -982,18 +980,18 @@ function tabTxns(){
         <td class="r num"><b>${money(t.brok,t.ccy)}</b></td>
       </tr>`).join('')}</tbody>
     </table></div>
-    <p class="hint" style="margin:12px 0 0">The advice fee is 0.51% of each amount you invest through a managed portfolio, charged once at the time of that investment. Your Premium subscription includes the platform fee. <b>No fee is charged on an execution-only order</b> — the only cost is brokerage, charged inside the order and never billed to your wallet.</p>
+    <p class="hint" style="margin:12px 0 0">The advice fee is 0.51% of each amount you invest through a managed portfolio, charged once at the time of that investment. The custody fee is 0.14% a year on South African securities, charged monthly and passed through from the custodian. <b>No fee is charged on an execution-only order</b> — the only cost is brokerage, charged inside the order and never billed to your wallet. Your Vault22 Premium subscription is not an investment cost and is billed separately — see <span class="dfn" title="Billing sits under your account, top right.">billing under your account</span>.</p>
   </div>
 
   <div class="card">
     <div class="sec-t">Transaction history <span class="pill o">${rows.length} entries</span><span class="r" onclick="toast('CSV export — not in this prototype')">Export CSV →</span></div>
     <p class="hint">Every account and both wallets, newest first. Amounts stay in the currency they happened in.</p>
     <div class="tablewrap"><table>
-      <thead><tr><th>Date</th><th>Activity</th><th>Account</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
+      <thead><tr><th>Date</th><th>Activity</th><th class="col-ccy">Currency</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
       <tbody>${rows.map(t=>`<tr>
         <td class="num">${dfmt(t.d)}</td>
         <td><b>${e(t.t)}</b><span class="sub2">${e(t.k)}</span></td>
-        <td>${e(t.acc)}</td>
+        <td class="col-ccy num">${e(t.ccy)}</td>
         <td class="r num ${t.a<0?'down':''}">${t.a<0?'-':''}${money(t.a,t.ccy)}</td>
         <td class="r"><span class="pill gs">${e(t.s)}</span></td>
       </tr>`).join('')}</tbody>
@@ -1035,7 +1033,7 @@ function tabStmts(){
     ${rows.length?`<div class="tablewrap"><table>
       <thead><tr><th>Statement</th><th>Period</th><th>Type</th><th class="r">Actions</th></tr></thead>
       <tbody>${rows.map(s=>`<tr>
-        <td><b>${e(s.t)}</b><span class="sub2">${e(s.label)}</span></td>
+        <td><b>${e(s.label)}</b></td>
         <td class="num">${dfmt(s.from)} – ${dfmt(s.to)}</td>
         <td><span class="pill ${s.kind==='Tax'?'a':s.kind==='Detailed'?'b':'gs'}">${e(s.kind)}</span></td>
         <td class="r" style="white-space:nowrap">
@@ -1154,7 +1152,7 @@ function stmtDoc(){
 
         <h3><span class="snum">4</span>What you bought and sold</h3>
         <div class="tablewrap"><table>
-          <thead><tr><th>Account</th><th class="r">Instructions</th><th class="r">Market orders</th><th class="r">Invested</th><th class="r">Withdrawn</th><th class="r">Brokerage incl. VAT</th></tr></thead>
+          <thead><tr><th>Account</th><th class="r">Instructions</th><th class="r">Market orders</th><th class="r">Invested</th><th class="r">Withdrawn</th><th class="r">Brokerage fees</th></tr></thead>
           <tbody>${TRADES.map(t=>`<tr><td><b>${e(t.acc)}</b></td><td class="r num">${t.instr}</td><td class="r num">${t.orders}</td><td class="r num">${money(t.inv,t.ccy)}</td><td class="r num">${money(t.out,t.ccy)}</td><td class="r num"><b>${money(t.brok,t.ccy)}</b></td></tr>`).join('')}</tbody>
         </table></div>
         <p class="expl">A portfolio instruction is split across the holdings and placed as one market order per fund. <b>Brokerage is charged once on the instruction</b> — 0.084% of the consideration on the rand side and 0.15% on the dollar side, with a $1.00 minimum — then apportioned across the funds it trades. It is not charged per fund, and it is never billed to your wallet.</p>

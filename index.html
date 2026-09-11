@@ -188,7 +188,8 @@ select:focus,input:focus{outline:none; border-color:var(--teal); box-shadow:0 0 
 .tick:hover{border-color:var(--green-line)}
 .tick .th{display:flex; align-items:center; gap:9px; margin-bottom:11px}
 .sym{width:34px; height:34px; border-radius:999px; background:var(--sunk); display:grid; place-items:center; font-family:Inter,sans-serif; font-size:10.5px; font-weight:700; color:var(--ink-2); flex:none}
-.sym.pf{background:var(--green-soft); color:#158c66}
+.sym.pf{background:var(--teal-50); color:var(--teal); border-radius:10px; padding:7px}
+.sym.pf svg{width:100%; height:100%; display:block}
 .tk{font-family:Inter,sans-serif; font-size:14px; font-weight:600; line-height:1.2}
 .tn{font-size:11.5px; color:var(--muted); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .tp{font-family:Inter,sans-serif; font-size:19px; font-weight:600; letter-spacing:-.02em}
@@ -252,6 +253,8 @@ footer.pf p{margin:0 0 5px}
 .dpills{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:10px}
 .back{display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line-2); background:var(--card); border-radius:999px; padding:7px 14px; font-family:Inter,sans-serif; font-size:12.5px; font-weight:600; color:var(--ink-2); cursor:pointer; margin-bottom:14px}
 .back:hover{background:var(--sunk)}
+.provmark{width:13px; height:13px; color:var(--teal); display:inline-block}
+.provmark svg{width:100%; height:100%; display:block}
 .provider{display:inline-flex; align-items:center; gap:7px; border:1px solid var(--green-line); background:var(--card); border-radius:999px; padding:5px 12px; font-family:Inter,sans-serif; font-size:12.5px; font-weight:600; color:#158c66}
 .kv{margin:14px 0 0}
 .kv h4{font-family:Inter,sans-serif; font-size:13.5px; font-weight:600; margin:0 0 2px}
@@ -268,12 +271,12 @@ tbody tr[onclick]:hover td{background:var(--sunk)}
 .namerow{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
 td.chev{color:var(--faint); font-size:18px}
 /* explore: one investment per row (Stephen, 11 Sep) */
-.exhead{display:grid; grid-template-columns:minmax(240px,2.4fr) 110px 128px 132px 150px 84px 28px; gap:14px; align-items:center;
+.exhead{display:grid; grid-template-columns:minmax(230px,2.4fr) 104px 124px 92px 74px 150px 84px 28px; gap:14px; align-items:center;
   padding:0 16px 9px; font-family:Inter,sans-serif; font-size:10px; font-weight:600; letter-spacing:.09em;
   text-transform:uppercase; color:var(--faint); border-bottom:1px solid var(--line-2)}
 .exhead .r{text-align:right}
 .exlist{display:flex; flex-direction:column; gap:8px; margin-top:10px}
-.exrow{display:grid; grid-template-columns:minmax(240px,2.4fr) 110px 128px 132px 150px 84px 28px; gap:14px; align-items:center;
+.exrow{display:grid; grid-template-columns:minmax(230px,2.4fr) 104px 124px 92px 74px 150px 84px 28px; gap:14px; align-items:center;
   width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer;
   background:var(--card); border:1px solid var(--line); border-radius:12px; padding:13px 16px}
 .exrow:hover{border-color:var(--teal); box-shadow:var(--shadow)}
@@ -719,6 +722,7 @@ const go = (o={}) => { Object.assign(S,o); render(); };
 const setF = (grp,k,v) => { S[grp][k]=v; render(); };
 const RISK_CLS = {Conservative:'risk-c', Balanced:'risk-b', Growth:'risk-g', Aggressive:'risk-a'};
 const mktPill = (region,ccy) => `<span class="pill o">${region==='US'?'🇺🇸 US':'🇿🇦 SA'} · ${e(ccy)}</span>`;
+const V22LOGO = `<svg viewBox="0 0 309 277" aria-hidden="true"><path d="M91.0264 200.671C89.5637 198.674 89.4272 196.036 90.6632 193.651L152.622 74.0624C154.192 71.0333 157.657 68.9995 161.248 68.9995L193.41 68.9995C199.199 68.9995 202.581 74.0932 200.03 78.9684L124.307 223.677C121.362 229.305 112.88 230.51 109.425 225.792L91.0264 200.671Z" fill="currentColor"/><path d="M296.195 33.0615C301.984 33.0615 305.366 38.1551 302.815 43.0303L183.019 271.967C181.441 274.981 177.986 277 174.407 277H133.843C130.264 277 126.809 274.98 125.231 271.966L34.1826 97.9688C31.6315 93.0935 35.0143 88 40.8027 88H72.9648C76.5562 88 80.0214 90.0334 81.5908 93.0625L154.125 233.062L255.123 38.125C256.692 35.0959 260.158 33.0615 263.749 33.0615H296.195Z" fill="currentColor"/></svg>`;
 const countryPill = region => `<span class="pill o">${region==='US'?'🇺🇸 United States':'🇿🇦 South Africa'}</span>`;
 const valCell = (v,ccy) => ccy==='ZAR'
   ? `<b>${money(v,'ZAR')}</b>`
@@ -907,22 +911,23 @@ function tabExplore(){
   <p class="count">Showing <b>${rows.length}</b> of ${EXPLORE.length} · your risk profile is <b>Balanced</b>${f.risk&&f.risk!=='Balanced'?` — you are viewing <b>${e(f.risk)}</b>, which we will warn you about at buy`:''}</p>
   ${rows.length?`
   <div class="exhead">
-    <span>Investment</span><span>Type</span><span>Risk profile</span><span>Market</span>
-    <span class="r">Price / minimum</span><span class="r">1 year</span><span></span>
+    <span>Investment</span><span>Type</span><span>Risk profile</span><span>Market</span><span>Currency</span>
+    <span class="r">Minimum amount</span><span class="r">1 year</span><span></span>
   </div>
   <div class="exlist">
     ${rows.map(x=>{const isPf = x.type==='Portfolio'; return `
       <button class="exrow ${isPf?'pf':''}" onclick="openItem('${e(x.s)}')">
         <span class="ex-name">
-          <span class="sym ${isPf?'pf':''}">${e(isPf?'V22':x.s.slice(0,4))}</span>
+          <span class="sym ${isPf?'pf':''}">${isPf?V22LOGO:e(x.s.slice(0,4))}</span>
           <span style="min-width:0">
             <span class="tk">${e(x.s)}</span>
-            <span class="tn">${e(isPf?(x.desc||x.n):x.n)}</span>
+            ${isPf?'':`<span class="tn">${e(x.n)}</span>`}
           </span>
         </span>
         <span><span class="pill o">${e(x.type)}</span></span>
         <span>${riskPill(x.risk)}</span>
-        <span><span class="pill o">${e(x.region==='US'?'🇺🇸 US':'🇿🇦 SA')} · ${e(x.ccy)}</span></span>
+        <span><span class="pill o">${e(x.region==='US'?'🇺🇸 US':'🇿🇦 SA')}</span></span>
+        <span class="num">${e(x.ccy)}</span>
         <span class="r num ex-px">${isPf?'Min '+money0(x.min,x.ccy):money(x.px,x.ccy)}</span>
         <span class="r num ${x.ch.startsWith('-')?'down':'up'}">${e(x.ch)}</span>
         <span class="r chev">›</span>
@@ -942,7 +947,6 @@ function tabTxns(){
   </div>
   <div class="card">
     <div class="sec-t">Income you received <span class="pill gs">${zarFmt(sumZar(INCOME,'paid'))} paid to your wallets</span></div>
-    <p class="hint">Distributions from your funds and securities, plus interest on portfolio cash. Income leaves the investment account and lands in the matching wallet.</p>
     <div class="tablewrap"><table>
       <thead><tr><th>Account</th><th class="r">Distributions</th><th class="r">Tax withheld</th><th class="r">Cash interest</th><th class="r">Paid to your wallet</th></tr></thead>
       <tbody>${INCOME.map(i=>`<tr>
@@ -953,12 +957,10 @@ function tabTxns(){
         <td class="r num up"><b>${money(i.paid,i.ccy)}</b></td>
       </tr>`).join('')}</tbody>
     </table></div>
-    <p class="hint" style="margin:12px 0 0">US dividends are withheld at the 15% treaty rate; South African equity distributions carry 20% dividends tax, while interest distributions are paid gross.</p>
   </div>
 
   <div class="card">
     <div class="sec-t">What you paid <span class="pill o">${zarFmt(FEES.reduce((a,f)=>a+zar((f.advice+f.custody)*1.15,f.ccy),0) + sumZar(TRADES,'brok'))} in total</span></div>
-    <p class="hint">Everything you have been charged — fees billed to your wallet, and brokerage charged inside your orders.</p>
     <div class="tablewrap"><table>
       <thead><tr><th>Billed to</th><th class="r">Advice fee</th><th class="r">Custody fee</th><th class="r">VAT at 15%</th><th class="r">Total</th></tr></thead>
       <tbody>${FEES.map(f=>{const base=f.advice+f.custody, vat=base*0.15; return `<tr>
@@ -985,7 +987,6 @@ function tabTxns(){
 
   <div class="card">
     <div class="sec-t">Transaction history <span class="pill o">${rows.length} entries</span><span class="r" onclick="toast('CSV export — not in this prototype')">Export CSV →</span></div>
-    <p class="hint">Every account and both wallets, newest first. Amounts stay in the currency they happened in.</p>
     <div class="tablewrap"><table>
       <thead><tr><th>Date</th><th>Activity</th><th class="col-ccy">Currency</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
       <tbody>${rows.map(t=>`<tr>
@@ -1298,7 +1299,7 @@ function viewPortfolio(){
   </div>
 
   <div class="card" style="margin-top:14px">
-    <div class="sec-t">About this portfolio <span class="provider"><svg width="14" height="14" viewBox="0 0 32 32"><path d="M4 6 L16 27 L28 6 L22 6 L16 17 L10 6 Z" fill="#01c38d"/></svg> Vault22</span></div>
+    <div class="sec-t">About this portfolio <span class="provider"><span class="provmark">${V22LOGO}</span> Vault22</span></div>
     <div class="kv">
       <p>${e(p.desc)}</p>
       <h4>Best for</h4><p>${e(p.bestFor)}</p>
@@ -1393,7 +1394,7 @@ function viewItem(){
   <h2 class="page" style="margin-bottom:2px">${e(x.s)}</h2>
   <p class="asat">${e(x.n)}</p>
   <div class="card">
-    <div class="sec-t">${e(x.s)} <span class="provider"><svg width="14" height="14" viewBox="0 0 32 32"><path d="M4 6 L16 27 L28 6 L22 6 L16 17 L10 6 Z" fill="#01c38d"/></svg> Vault22</span></div>
+    <div class="sec-t">${e(x.s)} <span class="provider"><span class="provmark">${V22LOGO}</span> Vault22</span></div>
     <div class="kv">
       <p>${e(x.desc||'')}</p>
       <h4>Best for</h4><p>${e(x.bestFor||'')}</p>
@@ -1776,7 +1777,6 @@ function viewWallet(){
 
   <div class="card" style="margin-top:16px">
     <div class="sec-t">Transactions <span class="pill o">${rows.length}</span></div>
-    <p class="hint">Money in and out of this wallet. Buys and sells sit under the investment account, not here.</p>
     ${rows.length?`<div class="tablewrap"><table>
       <thead><tr><th>Activity</th><th>Date</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
       <tbody>${rows.map(t=>`<tr>

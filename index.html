@@ -258,6 +258,31 @@ footer.pf p{margin:0 0 5px}
 .kv p{margin:0 0 12px; font-size:13.5px; color:var(--ink-2)}
 
 /* funding / withdrawal screens */
+/* explore: one investment per row (Stephen, 11 Sep) */
+.exhead{display:grid; grid-template-columns:minmax(240px,2.4fr) 110px 128px 132px 150px 84px 28px; gap:14px; align-items:center;
+  padding:0 16px 9px; font-family:Inter,sans-serif; font-size:10px; font-weight:600; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); border-bottom:1px solid var(--line-2)}
+.exhead .r{text-align:right}
+.exlist{display:flex; flex-direction:column; gap:8px; margin-top:10px}
+.exrow{display:grid; grid-template-columns:minmax(240px,2.4fr) 110px 128px 132px 150px 84px 28px; gap:14px; align-items:center;
+  width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer;
+  background:var(--card); border:1px solid var(--line); border-radius:12px; padding:13px 16px}
+.exrow:hover{border-color:var(--teal); box-shadow:var(--shadow)}
+.exrow.pf{background:var(--gray-100); border-color:var(--gray-200)}
+.exrow.pf:hover{border-color:var(--teal)}
+.exrow .ex-name{display:flex; align-items:center; gap:11px; min-width:0}
+.exrow .tk{display:block; font-family:Inter,sans-serif; font-size:14px; font-weight:600; line-height:1.25}
+.exrow .tn{display:block; font-size:12.5px; color:var(--muted); line-height:1.35; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.exrow .ex-px{font-family:Inter,sans-serif; font-size:15px; font-weight:600}
+.exrow .r{text-align:right}
+.exrow .chev{color:var(--faint); font-size:18px; text-align:right}
+@media (max-width:1000px){
+  .exhead{display:none}
+  .exrow{grid-template-columns:1fr auto; gap:10px 12px}
+  .exrow .ex-name{grid-column:1 / -1}
+  .exrow .chev{display:none}
+  .exrow .r{text-align:left}
+}
 /* home */
 .homegrid{display:grid; grid-template-columns:1.2fr 1.15fr .9fr; gap:16px; align-items:stretch}
 @media (max-width:1100px){ .homegrid{grid-template-columns:1fr} }
@@ -856,22 +881,30 @@ function tabExplore(){
     ${on?`<button class="btn sm fclear" onclick="go({exp:{region:'',type:'',risk:'',ccy:'',q:''}})">Clear</button>`:''}
   </div>
   <p class="count">Showing <b>${rows.length}</b> of ${EXPLORE.length} · your risk profile is <b>Balanced</b>${f.risk&&f.risk!=='Balanced'?` — you are viewing <b>${e(f.risk)}</b>, which we will warn you about at buy`:''}</p>
-  ${rows.length?`<div class="grid3">
-    ${rows.map(x=>`
-      <div class="tick" onclick="openItem('${e(x.s)}')">
-        <div class="th">
-          <span class="sym ${x.type==='Portfolio'?'pf':''}">${e(x.type==='Portfolio'?'V22':x.s.slice(0,4))}</span>
-          <div style="min-width:0"><div class="tk">${e(x.s)}</div>${x.type==='Portfolio'?'':`<div class="tn">${e(x.n)}</div>`}</div>
-        </div>
-        ${x.type==='Portfolio'?`<p class="tdesc">${e(x.desc||x.n)}</p>`:''}
-        <div class="tp num">${x.type==='Portfolio'?'Min '+money0(x.min,x.ccy):money(x.px,x.ccy)}</div>
-        <div class="tc num ${x.ch.startsWith('-')?'down':'up'}">${e(x.ch)} · 1Y</div>
-        <div class="tf">
-          <span class="pill o">${e(x.type)}</span>${riskPill(x.risk)}
-          <span class="pill o">${e(x.region==='US'?'🇺🇸 US':'🇿🇦 SA')} · ${e(x.ccy)}</span>
-        </div>
-      </div>`).join('')}
-  </div>`:`<div class="card"><div class="empty">Nothing matches those filters. Try clearing the risk profile or currency.</div></div>`}`;
+  ${rows.length?`
+  <div class="exhead">
+    <span>Investment</span><span>Type</span><span>Risk profile</span><span>Market</span>
+    <span class="r">Price / minimum</span><span class="r">1 year</span><span></span>
+  </div>
+  <div class="exlist">
+    ${rows.map(x=>{const isPf = x.type==='Portfolio'; return `
+      <button class="exrow ${isPf?'pf':''}" onclick="openItem('${e(x.s)}')">
+        <span class="ex-name">
+          <span class="sym ${isPf?'pf':''}">${e(isPf?'V22':x.s.slice(0,4))}</span>
+          <span style="min-width:0">
+            <span class="tk">${e(x.s)}</span>
+            <span class="tn">${e(isPf?(x.desc||x.n):x.n)}</span>
+          </span>
+        </span>
+        <span><span class="pill o">${e(x.type)}</span></span>
+        <span>${riskPill(x.risk)}</span>
+        <span><span class="pill o">${e(x.region==='US'?'🇺🇸 US':'🇿🇦 SA')} · ${e(x.ccy)}</span></span>
+        <span class="r num ex-px">${isPf?'Min '+money0(x.min,x.ccy):money(x.px,x.ccy)}</span>
+        <span class="r num ${x.ch.startsWith('-')?'down':'up'}">${e(x.ch)}</span>
+        <span class="r chev">›</span>
+      </button>`}).join('')}
+  </div>
+  `:`<div class="card"><div class="empty">Nothing matches those filters. Try clearing the risk profile or currency.</div></div>`}`;
 }
 
 /* ================= tab: transactions ================= */
